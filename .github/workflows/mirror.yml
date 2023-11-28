@@ -13,5 +13,4 @@ jobs:
       - uses: pixta-dev/repository-mirroring-action@v1
         with:
           target_repo_url: "git@github.com:axFury/testrtype.git"
-          ssh_private_key:                              # <-- use 'secrets' to pass credential information.
-            ${{ secrets.PRIVATE_SSH_KEY }}
+          ssh_private_key: ${{ secrets.PRIVATE_SSH_KEY }}
