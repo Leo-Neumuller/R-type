@@ -1,4 +1,5 @@
 build/
 cmake-build-debug/
 *.o
-.idea/%
+.idea/
+.DS_Store
