@@ -10,11 +10,13 @@ add_executable(r-type_client
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 
 
-include(FetchContent)
-FetchContent_Declare(SFML
-        GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 2.6.x)
-FetchContent_MakeAvailable(SFML)
-target_link_libraries(r-type_client PRIVATE sfml-graphics)
+if (UNIX OR APPLE)
+    include(FetchContent)
+    FetchContent_Declare(SFML
+            GIT_REPOSITORY https://github.com/SFML/SFML.git
+            GIT_TAG 2.6.x)
+    FetchContent_MakeAvailable(SFML)
+    target_link_libraries(r-type_client PRIVATE sfml-graphics)
 
-install(TARGETS r-type_client DESTINATION bin)
+    install(TARGETS r-type_client DESTINATION bin)
+endif (UNIX OR APPLE)
