@@ -19,8 +19,13 @@ add_executable(r-type_server
         network/PacketsRegistry.hpp
         network/packet/EPacket.hpp
         network/packet/IPacket.hpp
-        network/packet/GenericPacket.cpp
-        network/packet/GenericPacket.hpp)
+        network/packet/GenericPacket.hpp
+        ../shared/Entity.cpp
+        ../shared/Registry.hpp
+        ../shared/SparseArray.hpp)
+
+
+include_directories(../shared/)
 
 target_compile_features(r-type_server PRIVATE cxx_std_17)
 
