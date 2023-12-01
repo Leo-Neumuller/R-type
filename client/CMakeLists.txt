@@ -5,7 +5,10 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(r-type_client
-        main.cpp)
+        main.cpp
+        ../shared/Entity.cpp
+        ../shared/Registry.hpp
+        ../shared/SparseArray.hpp)
 
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 
