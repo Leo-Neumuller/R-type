@@ -10,6 +10,8 @@ add_executable(r-type_client
         ../shared/Registry.hpp
         ../shared/SparseArray.hpp)
 
+include_directories(../shared/)
+
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 
 
