@@ -7,7 +7,7 @@
 
 #include "IdGenerator.hpp"
 
-namespace Server {
+namespace network {
 
     IdGenerator::IdGenerator() : _count(0), _id_map()
     {

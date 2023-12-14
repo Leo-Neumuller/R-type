@@ -10,13 +10,14 @@
 
 #include <iostream>
 #include "asio.hpp"
-#include "NetworkHandler.hpp"
+#include "network/NetworkHandler.hpp"
+#include <thread>
 
-namespace Server {
+namespace server {
 
     class Network {
         public:
-            Network(NetworkHandler &network_handler);
+            Network(network::NetworkHandler<EPacketClient> &network_handler);
             ~Network();
 
             void run(int port);
@@ -28,10 +29,11 @@ namespace Server {
             void _handle_receive(const asio::error_code &error, std::size_t bytes_transferred);
 
             asio::io_service _io_service;
-            std::unique_ptr<asio::ip::udp::socket> _udp_socket;
+            std::shared_ptr<asio::ip::udp::socket> _udp_socket;
             asio::ip::udp::endpoint _udp_client_endpoint;
             std::array<char, 1024> _data;
-            NetworkHandler &_network_handler;
+            network::NetworkHandler<EPacketClient> &_network_handler;
+            std::thread _thread;
 
     };
 

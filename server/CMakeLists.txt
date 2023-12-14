@@ -9,27 +9,25 @@ add_executable(r-type_server
         network/Network.hpp
         Server.cpp
         Server.hpp
-        network/NetworkHandler.cpp
-        network/NetworkHandler.hpp
-        utils/IdGenerator.cpp
-        utils/IdGenerator.hpp
-        Client.cpp
-        Client.hpp
-        network/PacketsRegistry.cpp
-        network/PacketsRegistry.hpp
-        network/packet/EPacket.hpp
-        network/packet/IPacket.hpp
-        network/packet/GenericPacket.hpp
+        ../shared/network/NetworkHandler.hpp
+        ../shared/network/utils/IdGenerator.cpp
+        ../shared/network/utils/IdGenerator.hpp
+        ../shared/network/NetworkClient.cpp
+        ../shared/network/NetworkClient.hpp
+        ../shared/network/PacketsRegistry.hpp
+        ../shared/network/packet/EPacket.hpp
+        ../shared/network/packet/IPacket.hpp
+        ../shared/network/packet/GenericPacket.hpp
         ../shared/Entity.cpp
         ../shared/Registry.hpp
-        ../shared/SparseArray.hpp)
+        ../shared/SparseArray.hpp
+        network/PacketCallbacks.cpp
+        network/PacketCallbacks.hpp)
 
 
-include_directories(../shared/)
+include_directories(../shared/ network ../shared/network/utils ../shared/network/packet .)
 
 target_compile_features(r-type_server PRIVATE cxx_std_17)
-
-include_directories(network utils network/packet .)
 
 include(FetchContent)
 

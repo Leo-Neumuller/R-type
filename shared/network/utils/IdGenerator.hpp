@@ -12,7 +12,7 @@
 #include <iostream>
 #include <map>
 
-namespace Server {
+namespace network {
 
     class IdGenerator {
         public:

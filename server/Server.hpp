@@ -11,22 +11,38 @@
 #include <iostream>
 #include "network/Network.hpp"
 #include "network/NetworkHandler.hpp"
-#include "Client.hpp"
+#include "network/NetworkClient.hpp"
 
-namespace Server {
+namespace server {
 
     class Server {
         public:
             Server();
             ~Server();
 
-            void run(int port);
+            void runNetwork(int port);
+            void runServer();
+            network::PacketsRegistry &getPacketsRegistry();
+            network::NetworkHandler<EPacketClient> &getNetworkHandler();
         protected:
 
         private:
-            std::map<int, Client> _clients;
-            NetworkHandler _network_handler;
+            void setup();
+
+            template<typename... Args, typename Func>
+            void registerPacketClient(Func func, EPacketClient packet) {
+                _packets_registry.registerPacketClient<Args...>([this, func](int id, Args... args) {func(this, _clients, id, args...);}, packet);
+            }
+
+            template<typename... Args>
+            void registerPacketServer(EPacketServer packet) {
+                _packets_registry.registerPacketServer<Args...>([](int id, Args... args) {}, packet);
+            }
+
+            std::map<int, network::NetworkClient> _clients;
             Network _network;
+            network::PacketsRegistry _packets_registry;
+            network::NetworkHandler<EPacketClient> _network_handler;
 
 
     };

@@ -9,8 +9,9 @@
 
 int main(int ac, char **av)
 {
-    Server::Server server;
+    server::Server server;
 
-    server.run(4242);
+    server.runNetwork(4242);
+    server.runServer();
     return 0;
 }
