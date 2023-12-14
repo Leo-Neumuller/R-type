@@ -8,8 +8,15 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "src/TextureLoader/ParseTexture.hpp"
+#include "Client.hpp"
 
 int main() {
+    client::Client client;
+
+    client.connectToServer("127.0.0.1", 4242);
+    client.runClient();
+
+
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Texture Display");
     TextureLoader loader;
 
