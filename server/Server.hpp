@@ -12,6 +12,8 @@
 #include "network/Network.hpp"
 #include "network/NetworkHandler.hpp"
 #include "network/NetworkClient.hpp"
+#include "Registry.hpp"
+#include "Components.hpp"
 
 namespace server {
 
@@ -24,6 +26,7 @@ namespace server {
             void runServer();
             network::PacketsRegistry &getPacketsRegistry();
             network::NetworkHandler<EPacketClient> &getNetworkHandler();
+            void registerNewPlayer(int id, components::Position pos);
         protected:
 
         private:
@@ -43,7 +46,7 @@ namespace server {
             Network _network;
             network::PacketsRegistry _packets_registry;
             network::NetworkHandler<EPacketClient> _network_handler;
-
+            Registry _ecs;
 
     };
 

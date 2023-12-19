@@ -7,10 +7,13 @@
 
 #include "Server.hpp"
 #include "PacketCallbacks.hpp"
+#include "Entity.hpp"
+#include "Systems.hpp"
 
 namespace server {
 
-    Server::Server() : _clients(), _network(_network_handler), _packets_registry(), _network_handler(_clients, _packets_registry)
+    Server::Server() : _clients(), _network(_network_handler), _packets_registry(), _network_handler(_clients, _packets_registry),
+                       _ecs()
     {
     }
 
@@ -31,8 +34,9 @@ namespace server {
             try {
                 _network_handler.threatPacket();
             } catch (std::exception &e) {
-                std::cerr << "invalid packet from client" << std::endl;
+                std::cerr << "invalid packet from client: " << e.what() << std::endl;
             }
+            _ecs.runSystems();
         }
     }
 
@@ -42,6 +46,12 @@ namespace server {
         registerPacketServer<bool>(EPacketServer::SERVER_HELLO);
         registerPacketServer<std::string>(EPacketServer::DEBUG_PACKET_SERVER);
         registerPacketClient<std::string>(PacketCallbacks::debugCallback, EPacketClient::DEBUG_PACKET_CLIENT);
+        registerPacketServer<int, components::Position>(EPacketServer::NOTIFY_NEW_CLIENT);
+
+        _ecs.registerComponent<components::Position>();
+        _ecs.registerComponent<components::Velocity>();
+        _ecs.registerComponent<components::Id>();
+        _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem);
     }
 
     network::PacketsRegistry &Server::getPacketsRegistry()
@@ -52,6 +62,15 @@ namespace server {
     network::NetworkHandler<EPacketClient> &Server::getNetworkHandler()
     {
         return _network_handler;
+    }
+
+    void Server::registerNewPlayer(int id, components::Position pos)
+    {
+        auto entity = _ecs.spawnEntity();
+
+        _ecs.addComponent(entity, components::Position{pos.x, pos.y});
+        _ecs.addComponent(entity, components::Velocity{0, 0});
+        _ecs.addComponent(entity, components::Id{id});
     }
 
 

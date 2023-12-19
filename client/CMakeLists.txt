@@ -23,7 +23,14 @@ add_executable(r-type_client
         Client.cpp
         Client.hpp
         network/PacketCallbacks.cpp
-        network/PacketCallbacks.hpp)
+        network/PacketCallbacks.hpp
+        Render.cpp
+        Render.hpp
+        ../shared/Components.hpp
+        ../shared/Systems.cpp
+        ../shared/Systems.hpp
+        ClientComponents.hpp
+        ClientComponents.hpp)
 
 include_directories(../shared/)
 
@@ -45,7 +52,7 @@ target_link_libraries(r-type_client
         PRIVATE asio
 )
 
-if (UNIX OR APPLE)
+if (UNIX)
     include(FetchContent)
     FetchContent_Declare(SFML
             GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -54,4 +61,15 @@ if (UNIX OR APPLE)
     target_link_libraries(r-type_client PRIVATE sfml-graphics)
 
     install(TARGETS r-type_client DESTINATION bin)
-endif (UNIX OR APPLE)
+endif (UNIX)
+
+if (APPLE)
+    include(FetchContent)
+    FetchContent_Declare(SFML
+            GIT_REPOSITORY https://github.com/SFML/SFML.git
+            GIT_TAG 2.6.x)
+    FetchContent_MakeAvailable(SFML)
+    target_link_libraries(r-type_client PRIVATE sfml-graphics)
+
+    install(TARGETS r-type_client DESTINATION bin)
+endif (APPLE)

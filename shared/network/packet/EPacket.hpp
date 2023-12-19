@@ -23,6 +23,7 @@ enum EPacketClient {
 enum EPacketServer {
     DEBUG_PACKET_SERVER,
     SERVER_HELLO,
+    NOTIFY_NEW_CLIENT,
     SERVER_DISCONNECT
 };
 

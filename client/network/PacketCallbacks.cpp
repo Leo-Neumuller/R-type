@@ -27,4 +27,11 @@ namespace client {
         std::cout << "Debug from server: " << data << std::endl;
     }
 
+    void PacketCallbacks::newClientCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                            components::Position &pos)
+    {
+        std::cout << "New client {" << id << "} at {" << pos.x << ", " << pos.y << "}" << std::endl;
+        client->registerNewPlayer(id, pos);
+    }
+
 } // client

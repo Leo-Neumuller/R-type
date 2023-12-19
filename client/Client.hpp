@@ -12,6 +12,9 @@
 #include "network/Network.hpp"
 #include "network/NetworkHandler.hpp"
 #include "network/NetworkClient.hpp"
+#include "Registry.hpp"
+#include "Components.hpp"
+#include "Render.hpp"
 
 namespace client {
 
@@ -37,10 +40,12 @@ namespace client {
 
             bool isConnected() const;
             void setConnected(bool connected);
+            void registerNewPlayer(int id, components::Position pos);
         protected:
 
         private:
             void setup();
+            void networkHandle();
 
             std::map<int, network::NetworkClient> _server_list;
             Network _network;
@@ -48,6 +53,8 @@ namespace client {
             network::NetworkHandler<EPacketServer> _network_handler;
             network::NetworkClient *_server;
             bool _connected;
+            Registry _ecs;
+            Render _renderer;
 
     };
 
