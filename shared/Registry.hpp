@@ -39,16 +39,6 @@ class Registry {
             return std::any_cast<SparseArray<Component> &>(_components_arrays[type]);
         }
 
-//        template <class Component>
-//        SparseArray <Component> const &getComponent() const
-//        {
-//            std::type_index type = typeid(Component);
-//            if (_components_arrays.find(type) == _components_arrays.end()) {
-//                throw std::runtime_error("Component not found");
-//            }
-//            return std::any_cast<SparseArray<Component> const &>(_components_arrays[type]);
-//        }
-
         entity_t spawnEntity()
         {
             _entities.push_back(_entities.size());
@@ -88,8 +78,6 @@ class Registry {
 
             if (std::find(_entities.begin(), _entities.end(), entity) == _entities.end())
                 throw std::runtime_error("Entity does not exist");
-//            if (array[entity] == nullptr)
-//                throw std::runtime_error("Entity already has this component");
             array.emplace_at(entity, std::forward<Params>(params)...);
 
             return array[entity];

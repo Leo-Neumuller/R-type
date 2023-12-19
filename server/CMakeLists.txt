@@ -22,7 +22,10 @@ add_executable(r-type_server
         ../shared/Registry.hpp
         ../shared/SparseArray.hpp
         network/PacketCallbacks.cpp
-        network/PacketCallbacks.hpp)
+        network/PacketCallbacks.hpp
+        ../shared/Components.hpp
+        ../shared/Systems.cpp
+        ../shared/Systems.hpp)
 
 
 include_directories(../shared/ network ../shared/network/utils ../shared/network/packet .)

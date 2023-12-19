@@ -45,10 +45,14 @@ namespace network {
             }
 
             std::unique_ptr<IPacket *>getPacket(EPacketClient packet) {
+                if (_packets_client.find(packet) == _packets_client.end())
+                    throw std::runtime_error("Packet not found");
                 return (std::make_unique<IPacket *>(_packets_client[packet]()));
             }
 
             std::unique_ptr<IPacket *>getPacket(EPacketServer packet) {
+                if (_packets_server.find(packet) == _packets_server.end())
+                    throw std::runtime_error("Packet not found");
                 return (std::make_unique<IPacket *>(_packets_server[packet]()));
             }
 

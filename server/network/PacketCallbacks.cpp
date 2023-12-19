@@ -24,6 +24,16 @@ namespace server {
         _clients.at(fromId).setConnected(true);
 
         server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, bool>>(fromId, EPacketServer::SERVER_HELLO, true);
+        for (int i = 0; i < _clients.size(); ++i) {
+            if (i == fromId)
+                continue;
+            if (_clients.at(i).isConnected()) {
+                std::cout << "Send to client {" << i << "}" << std::endl;
+                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(fromId, EPacketServer::NOTIFY_NEW_CLIENT, i, components::Position{0, 0});
+                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(i, EPacketServer::NOTIFY_NEW_CLIENT, fromId, components::Position{0, 0});
+            }
+        }
+        server->registerNewPlayer(fromId, components::Position{0, 0});
     }
 
     void PacketCallbacks::debugCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,

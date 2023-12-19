@@ -39,7 +39,8 @@ namespace network{
                 int id = _id_generator.getId(endpoint.address().to_string() + std::to_string(endpoint.port()));
 
                 if (_clients.find(id) == _clients.end()) {
-                    _clients.emplace(id, NetworkClient(id, endpoint, [&socket, &endpoint, this] (const std::vector<char> &data) { socket.async_send_to(asio::buffer(data, 1024), endpoint, std::bind(
+                    asio::ip::basic_endpoint<asio::ip::udp> duplicateEndpoint(endpoint);
+                    _clients.emplace(id, NetworkClient(id, endpoint, [&socket, duplicateEndpoint, this] (const std::vector<char> &data) { socket.async_send_to(asio::buffer(data, 1024), duplicateEndpoint, std::bind(
                             &NetworkHandler::handler, this, std::placeholders::_1, std::placeholders::_2)); }));
                 }
                 std::vector<char> packet(data.begin(), data.begin() + bytes_transferred);

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "Server.hpp"
+#include "Components.hpp"
 
 namespace server {
 

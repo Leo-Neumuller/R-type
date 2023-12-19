@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "Client.hpp"
+#include "Components.hpp"
 
 namespace client {
 
@@ -20,6 +21,7 @@ namespace client {
 
             static void helloCallback(Client *client, network::NetworkClient &server, int &fromId, bool &data);
             static void debugCallback(Client *client, network::NetworkClient &server, int &fromId, std::string &data);
+            static void newClientCallback(Client *client, network::NetworkClient &server, int &fromId, int &id, components::Position &pos);
         protected:
 
         private:
