@@ -10,12 +10,13 @@
 namespace ecs {
 
     void
-    Systems::moveSystem(Registry &r, SparseArray<components::Position> &pos, SparseArray<components::Velocity> &vel)
+    Systems::moveSystem(Registry &r, float &deltaTime, SparseArray<components::Position> &pos,
+                        SparseArray<components::Velocity> &vel)
     {
         for (int i = 0; i < pos.size() && i < vel.size(); i++) {
             if (pos.has_index(i) && vel.has_index(i)) {
-                pos[i]->x += vel[i]->vx;
-                pos[i]->y += vel[i]->vy;
+                pos[i]->x += vel[i]->vx * deltaTime;
+                pos[i]->y += vel[i]->vy * deltaTime;
             }
         }
     }

@@ -22,6 +22,11 @@ namespace client {
             static void helloCallback(Client *client, network::NetworkClient &server, int &fromId, bool &data);
             static void debugCallback(Client *client, network::NetworkClient &server, int &fromId, std::string &data);
             static void newClientCallback(Client *client, network::NetworkClient &server, int &fromId, int &id, components::Position &pos);
+            static void clientBaseInfoCallback(Client *client, network::NetworkClient &server, int &fromId, int &id, components::Position &pos);
+            static void forceSetPosCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                            components::Position &pos, components::Velocity &vel);
+            static void sendPosVelCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                           components::Position &pos, components::Velocity &vel);
         protected:
 
         private:

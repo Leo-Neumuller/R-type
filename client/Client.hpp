@@ -15,6 +15,7 @@
 #include "Registry.hpp"
 #include "Components.hpp"
 #include "Render.hpp"
+#include <chrono>
 
 namespace client {
 
@@ -41,10 +42,13 @@ namespace client {
             bool isConnected() const;
             void setConnected(bool connected);
             void registerNewPlayer(int id, components::Position pos);
+            int getCurrentPlayerId() const;
+            void setCurrentPlayerId(int currentPlayerId);
+            Registry &getEcs();
         protected:
 
         private:
-            void setup();
+            void setup(float &deltatime);
             void networkHandle();
 
             std::map<int, network::NetworkClient> _server_list;
@@ -55,6 +59,7 @@ namespace client {
             bool _connected;
             Registry _ecs;
             Render _renderer;
+            int _current_player_id;
 
     };
 

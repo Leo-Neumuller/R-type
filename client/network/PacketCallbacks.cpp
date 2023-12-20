@@ -34,4 +34,44 @@ namespace client {
         client->registerNewPlayer(id, pos);
     }
 
+    void PacketCallbacks::clientBaseInfoCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                                 components::Position &pos)
+    {
+        client->setCurrentPlayerId(id);
+        client->registerNewPlayer(id, pos);
+
+    }
+
+    void PacketCallbacks::forceSetPosCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                              components::Position &pos, components::Velocity &vel)
+    {
+        auto &ids = client->getEcs().getComponent<components::Id>();
+
+        for (auto &entity : client->getEcs().getEntities()) {
+            std::cout << entity << " " << id << std::endl;
+            if (ids[entity] == id) {
+                client->getEcs().getComponent<components::Position>()[entity] = pos;
+                client->getEcs().getComponent<components::Velocity>()[entity] = vel;
+                std::cout << client->getEcs().getComponent<components::Velocity>()[entity]->vx << std::endl;
+                break;
+            }
+        }
+    }
+
+    void PacketCallbacks::sendPosVelCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                             components::Position &pos, components::Velocity &vel)
+    {
+        auto &ids = client->getEcs().getComponent<components::Id>();
+
+        for (auto &entity : client->getEcs().getEntities()) {
+            if (ids[entity] == id) {
+                client->getEcs().getComponent<components::Position>()[entity] = pos;
+                client->getEcs().getComponent<components::Velocity>()[entity] = vel;
+                std::cout << pos.x << std::endl;
+                break;
+            }
+        }
+
+    }
+
 } // client

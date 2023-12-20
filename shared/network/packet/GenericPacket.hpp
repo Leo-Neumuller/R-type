@@ -25,7 +25,6 @@ namespace network {
         public:
             explicit GenericPacket(Func func) : _size(0), _func(func) {
                 _nb_params = sizeof...(Args);
-                std::cout << "nb params: " << _nb_params << std::endl;
                 (addParamSize<Args>(), ...);
             };
             ~GenericPacket() override = default;

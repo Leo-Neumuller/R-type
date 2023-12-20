@@ -25,7 +25,9 @@ add_executable(r-type_server
         network/PacketCallbacks.hpp
         ../shared/Components.hpp
         ../shared/Systems.cpp
-        ../shared/Systems.hpp)
+        ../shared/Systems.hpp
+        TimedEvents.cpp
+        TimedEvents.hpp)
 
 
 include_directories(../shared/ network ../shared/network/utils ../shared/network/packet .)

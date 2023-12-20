@@ -9,7 +9,7 @@
 
 namespace client {
 
-    Render::Render(Registry &ecs) : _ecs(ecs), _window()
+    Render::Render(Registry &ecs) : _ecs(ecs), _window(), _clock()
     {
     }
 
@@ -24,12 +24,15 @@ namespace client {
         _ecs.addSystem<components::Position, components::Drawable, components::Size>([this](Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size) {
             drawSystem(ecs, pos, draw, size);
         });
+        _clock.restart();
     }
 
-    void Render::render()
+    float Render::render()
     {
         _window.display();
         _window.clear();
+
+        return _clock.restart().asSeconds();
     }
 
     bool Render::isOpen()

@@ -20,7 +20,8 @@ namespace ecs {
             Systems() = delete;
             ~Systems() = delete;
 
-            static void moveSystem(Registry& r, SparseArray<components::Position> &pos, SparseArray<components::Velocity> &vel);
+            static void moveSystem(Registry &r, float &deltaTime, SparseArray<components::Position> &pos,
+                                   SparseArray<components::Velocity> &vel);
         protected:
 
         private:

@@ -91,6 +91,15 @@ class Registry {
             registerComponent<std::function<void(Registry &)>>().push_back(system);
         }
 
+        template <class... Components, typename Function>
+        void addSystem(Function &&function, float &deltaTime) {
+            std::function<void(Registry &)> system = [function, this, &deltaTime](Registry &registry) {
+                function(registry, deltaTime, getComponent<Components>()...);
+            };
+            registerComponent<std::function<void(Registry &)>>().push_back(system);
+        }
+
+
         void runSystems()
         {
             auto &systems = getComponent<std::function<void(Registry &)>>();

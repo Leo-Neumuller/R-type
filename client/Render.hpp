@@ -23,7 +23,7 @@ namespace client {
             ~Render();
 
             void startRender();
-            void render();
+            float render();
             bool isOpen();
             void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size);
         protected:
@@ -32,6 +32,7 @@ namespace client {
 
             sf::RenderWindow _window;
             Registry &_ecs;
+            sf::Clock _clock;
 
     };
 

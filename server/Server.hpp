@@ -14,6 +14,8 @@
 #include "network/NetworkClient.hpp"
 #include "Registry.hpp"
 #include "Components.hpp"
+#include <chrono>
+#include "TimedEvents.hpp"
 
 namespace server {
 
@@ -27,10 +29,15 @@ namespace server {
             network::PacketsRegistry &getPacketsRegistry();
             network::NetworkHandler<EPacketClient> &getNetworkHandler();
             void registerNewPlayer(int id, components::Position pos);
+            TimedEvents &getTimedEvents();
+            Registry &getEcs();
+            void setPlayerPos(int id, components::Position pos);
+            void setPlayerVel(int id, components::Velocity vel);
         protected:
 
         private:
-            void setup();
+            void setup(float &deltatime);
+            void networkLoop();
 
             template<typename... Args, typename Func>
             void registerPacketClient(Func func, EPacketClient packet) {
@@ -47,6 +54,9 @@ namespace server {
             network::PacketsRegistry _packets_registry;
             network::NetworkHandler<EPacketClient> _network_handler;
             Registry _ecs;
+            std::thread _network_thread;
+            bool _running;
+            TimedEvents _timed_events;
 
     };
 
