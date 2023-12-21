@@ -21,9 +21,18 @@ namespace client {
     {
         _window.create(sf::VideoMode(800, 600), "R-Type");
 
-        _ecs.addSystem<components::Position, components::Drawable, components::Size>([this](Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size) {
+        _ecs.addSystem<components::Position, components::sDrawable , components::Size>([this](Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::sDrawable> &draw, SparseArray<components::Size> &size) {
             drawSystem(ecs, pos, draw, size);
         });
+
+        Entity test(_ecs.spawnEntity());
+        _ecs.addComponent(test, components::Size{100, 100});
+        _ecs.addComponent(test, components::Position{100, 100});
+        _ecs.addComponent(test, components::Velocity{1, 0});
+
+        sf::Texture text;
+        text.loadFromFile("../client/assets/Sprites/player1.png");
+        _ecs.addComponent(test, components::sDrawable(text));
     }
 
     void Render::render()
@@ -38,13 +47,13 @@ namespace client {
     }
 
     void
-    Render::drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw,
+    Render::drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::sDrawable> &draw,
                        SparseArray<components::Size> &size)
     {
         for (int i = 0; i < pos.size() && i < draw.size() && i < size.size(); i++) {
             if (pos.has_index(i) && draw.has_index(i) && size.has_index(i)) {
                 draw[i]->setPosition(pos[i]->x, pos[i]->y);
-                draw[i]->setSize(sf::Vector2f(size[i]->width, size[i]->height));
+                //draw[i]->setSize(sf::Vector2f(size[i]->width, size[i]->height));
                 _window.draw(*draw[i]);
             }
         }

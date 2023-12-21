@@ -30,7 +30,8 @@ add_executable(r-type_client
         ../shared/Systems.cpp
         ../shared/Systems.hpp
         ClientComponents.hpp
-        ClientComponents.hpp)
+        ClientComponents.hpp
+        src/PlayerSprite/playerSprite.cpp)
 
 include_directories(../shared/)
 
@@ -52,7 +53,7 @@ target_link_libraries(r-type_client
         PRIVATE asio
 )
 
-if (UNIX)
+if (UNIX OR APPLE)
     include(FetchContent)
     FetchContent_Declare(SFML
             GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -61,15 +62,5 @@ if (UNIX)
     target_link_libraries(r-type_client PRIVATE sfml-graphics)
 
     install(TARGETS r-type_client DESTINATION bin)
-endif (UNIX)
+endif (UNIX OR APPLE)
 
-if (APPLE)
-    include(FetchContent)
-    FetchContent_Declare(SFML
-            GIT_REPOSITORY https://github.com/SFML/SFML.git
-            GIT_TAG 2.6.x)
-    FetchContent_MakeAvailable(SFML)
-    target_link_libraries(r-type_client PRIVATE sfml-graphics)
-
-    install(TARGETS r-type_client DESTINATION bin)
-endif (APPLE)

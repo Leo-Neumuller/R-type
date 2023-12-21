@@ -17,7 +17,7 @@ int main() {
     client.runClient();
 
 
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Texture Display");
+    /*sf::RenderWindow window(sf::VideoMode(1920, 1080), "Texture Display");
     TextureLoader loader;
 
     try {
@@ -60,7 +60,7 @@ int main() {
             window.draw(sprite);
         }
         window.display();
-    }
+    }*/
 
     return 0;
 }

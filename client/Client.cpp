@@ -77,6 +77,7 @@ namespace client {
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem);
         _ecs.registerComponent<components::Drawable>();
         _ecs.registerComponent<components::Size>();
+        _ecs.registerComponent<components::sDrawable>();
     }
 
     bool Client::isConnected() const

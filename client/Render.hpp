@@ -14,6 +14,7 @@
 #include <memory>
 #include "Components.hpp"
 #include "ClientComponents.hpp"
+#include "Entity.hpp"
 
 namespace client {
 
@@ -25,7 +26,7 @@ namespace client {
             void startRender();
             void render();
             bool isOpen();
-            void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size);
+            void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::sDrawable> &draw, SparseArray<components::Size> &size);
         protected:
 
         private:

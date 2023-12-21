@@ -4,6 +4,7 @@
 ** File description:
 ** R-Type
 */
+
 #ifndef R_TYPE_PARSETEXTURE_HPP
     #define R_TYPE_PARSETEXTURE_HPP
 
