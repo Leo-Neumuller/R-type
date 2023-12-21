@@ -33,11 +33,6 @@ class SparseArray {
 
         reference_type operator[](size_type index)
         {
-//            if (index >= _data.size())
-//                return std::nullopt;
-
-//            if (_data[index] == nullptr)
-//                throw std::runtime_error("Index out of range");
             return _data[index];
         }
         const_reference_type operator[](size_type index) const
@@ -45,8 +40,6 @@ class SparseArray {
             if (index >= _data.size())
                 return std::nullopt;
 
-//            if (_data[index] == nullptr)
-//                throw std::runtime_error("Index out of range");
             return _data[index];
         }
 

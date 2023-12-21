@@ -13,6 +13,7 @@
 #include <typeindex>
 #include "SparseArray.hpp"
 #include <any>
+#include <map>
 #include <algorithm>
 
 class Registry {
@@ -58,6 +59,12 @@ class Registry {
         void killEntity(entity_t const &entity)
         {
             _entities.erase(std::remove(_entities.begin(), _entities.end(), entity), _entities.end());
+            if (_free_entities.find(entity) != _free_entities.end()) {
+                for (auto &func : _free_entities[entity]) {
+                    func();
+                }
+                _free_entities.erase(entity);
+            }
         }
 
         template <typename Component>
@@ -68,6 +75,11 @@ class Registry {
             if (std::find(_entities.begin(), _entities.end(), entity) == _entities.end())
                 throw std::runtime_error("Entity does not exist");
 
+            if (_free_entities.find(entity) == _free_entities.end())
+                _free_entities.emplace(entity, std::vector<std::function<void()>>());
+            _free_entities[entity].push_back([this, entity, &array]() {
+                array.erase(entity);
+            });
             return array.insert_at(entity, std::forward<Component>(component));;
         }
 
@@ -80,6 +92,11 @@ class Registry {
                 throw std::runtime_error("Entity does not exist");
             array.emplace_at(entity, std::forward<Params>(params)...);
 
+            if (_free_entities.find(entity) == _free_entities.end())
+                _free_entities.emplace(entity, std::vector<std::function<void()>>());
+            _free_entities[entity].push_back([this, entity, &array]() {
+                array.erase(entity);
+            });
             return array[entity];
         }
 
@@ -129,6 +146,7 @@ class Registry {
 
     private:
         std::unordered_map<std::type_index, std::any> _components_arrays;
+        std::map<entity_t , std::vector<std::function<void()>>> _free_entities;
         std::vector<entity_t> _entities;
 
 
