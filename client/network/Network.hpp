@@ -23,6 +23,7 @@ namespace client {
             void run(std::string address, int port, std::vector<char> &first_data);
             const std::shared_ptr<asio::ip::udp::socket> &getUdpSocket() const;
             const asio::ip::udp::endpoint &getUdpClientEndpoint() const;
+            void stop();
         protected:
 
         private:

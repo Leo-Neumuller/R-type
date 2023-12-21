@@ -10,10 +10,15 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <queue>
 
 namespace components {
 
     typedef sf::RectangleShape Drawable;
+    typedef sf::Event Event;
+    typedef std::queue<sf::Event> KeyboardEvents;
+    typedef std::queue<sf::Event> WindowEvents;
+    typedef sf::RenderWindow *Window;
 
 } // ecs
 

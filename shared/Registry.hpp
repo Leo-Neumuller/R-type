@@ -77,7 +77,7 @@ class Registry {
 
             if (_free_entities.find(entity) == _free_entities.end())
                 _free_entities.emplace(entity, std::vector<std::function<void()>>());
-            _free_entities[entity].push_back([this, entity, &array]() {
+            _free_entities[entity].push_back([entity, &array]() {
                 array.erase(entity);
             });
             return array.insert_at(entity, std::forward<Component>(component));;
@@ -94,7 +94,7 @@ class Registry {
 
             if (_free_entities.find(entity) == _free_entities.end())
                 _free_entities.emplace(entity, std::vector<std::function<void()>>());
-            _free_entities[entity].push_back([this, entity, &array]() {
+            _free_entities[entity].push_back([entity, &array]() {
                 array.erase(entity);
             });
             return array[entity];

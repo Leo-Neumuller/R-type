@@ -10,6 +10,7 @@
 #include "Systems.hpp"
 #include <utility>
 #include "ClientComponents.hpp"
+#include "ClientSystems.hpp"
 
 namespace client {
 
@@ -34,25 +35,25 @@ namespace client {
         float deltatime = 0;
 
         setup(deltatime);
-        std::thread network_thread(&Client::networkHandle, this);
         _renderer.startRender();
         while (_renderer.isOpen()) {
+            networkHandle();
             _ecs.runSystems();
             deltatime = _renderer.render();
         }
+        _network.stop();
     }
 
     void Client::networkHandle()
     {
-        while (true) {
-            _network_handler.waitForPacket();
-            _server = &_server_list.begin()->second;
-            try {
-                _network_handler.threatPacket();
-            } catch (std::exception &e) {
-                std::cerr << "invalid packet from server: " << e.what() << std::endl;
+            if (!_network_handler.isPacketQueueEmpty()) {
+                _server = &_server_list.begin()->second;
+                try {
+                    _network_handler.threatPacket();
+                } catch (std::exception &e) {
+                    std::cerr << "invalid packet from server: " << e.what() << std::endl;
+                }
             }
-        }
     }
 
     network::PacketsRegistry &Client::getPacketsRegistry()
@@ -79,9 +80,16 @@ namespace client {
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
         _ecs.registerComponent<components::Id>();
-        _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
         _ecs.registerComponent<components::Drawable>();
         _ecs.registerComponent<components::Size>();
+        _ecs.registerComponent<components::Event>();
+        _ecs.registerComponent<components::Window>();
+        _ecs.registerComponent<components::KeyboardEvents>();
+        _ecs.registerComponent<components::WindowEvents>();
+        _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
+        _ecs.addSystem<components::Position, components::Drawable, components::Size>(ecs::ClientSystems::drawSystem);
+        _ecs.addSystem<components::Event, components::Window, components::KeyboardEvents, components::WindowEvents>(ecs::ClientSystems::eventPollingSystem);
+        _ecs.addSystem<components::Window, components::WindowEvents>(ecs::ClientSystems::windowEventsSystem);
     }
 
     bool Client::isConnected() const
@@ -119,5 +127,6 @@ namespace client {
     {
         return _ecs;
     }
+
 
 } // client

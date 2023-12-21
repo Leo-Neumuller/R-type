@@ -63,4 +63,10 @@ namespace client {
 
     }
 
+    void Network::stop()
+    {
+        _io_service.stop();
+        _thread.join();
+    }
+
 } // Client

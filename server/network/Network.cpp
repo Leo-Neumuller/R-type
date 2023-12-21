@@ -36,7 +36,11 @@ namespace server {
 
     void Network::run(int port)
     {
-        _udp_socket = std::make_shared<asio::ip::udp::socket>(_io_service, asio::ip::udp::endpoint(asio::ip::udp::v4(), port));
+        try {
+            _udp_socket = std::make_shared<asio::ip::udp::socket>(_io_service, asio::ip::udp::endpoint(asio::ip::udp::v4(), port));
+        } catch (std::exception &e) {
+            std::cerr << e.what() << std::endl;
+        }
         _thread = std::thread([this](){
             _begin_receive();
             _io_service.run();
