@@ -35,21 +35,20 @@ namespace ecs {
 
     void ClientSystems::eventPollingSystem(Registry &ecs, SparseArray<components::Event> &event,
                                            SparseArray<components::Window> &window,
-                                           SparseArray<components::KeyboardEvents> &keyboardEvents,
-                                           SparseArray<components::WindowEvents> &windowEvents)
+                                           SparseArray<components::EventQueues> &event_queues)
     {
         for (int i = 0; i < event.size() && i < window.size(); i++) {
-            if (event.has_index(i) && window.has_index(i) && keyboardEvents.has_index(i) && windowEvents.has_index(i)) {
+            if (event.has_index(i) && window.has_index(i) && event_queues.has_index(i)) {
                 while ((*window[i])->pollEvent((*event[i]))) {
                     switch ((*event[i]).type) {
                         case sf::Event::Closed:
-                            windowEvents[i]->push((*event[i]));
+                            event_queues[i]->windowEvents.push(event[i].value());
                             break;
                         case sf::Event::KeyPressed:
-                            keyboardEvents[i]->push((*event[i]));
+                            event_queues[i]->keyboardEvents.push(event[i].value());
                             break;
                         case sf::Event::KeyReleased:
-                            keyboardEvents[i]->push((*event[i]));
+                            event_queues[i]->keyboardEvents.push(event[i].value());
                             break;
                         default:
                             break;
@@ -60,17 +59,85 @@ namespace ecs {
     }
 
     void ClientSystems::windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window,
-                                           SparseArray<components::WindowEvents> &windowEvents)
+                                           SparseArray<components::EventQueues> &event_queues)
     {
-        for (int i = 0; i < window.size() && i < windowEvents.size(); i++) {
-            if (window.has_index(i) && windowEvents.has_index(i)) {
-                while (!windowEvents[i]->empty()) {
-                    if (windowEvents[i]->front().type == sf::Event::Closed) {
+        for (int i = 0; i < window.size() && i < event_queues.size(); i++) {
+            if (window.has_index(i) && event_queues.has_index(i)) {
+                while (!event_queues[i]->windowEvents.empty()) {
+                    if (event_queues[i]->windowEvents.front().type == sf::Event::Closed) {
                         (*window[i])->close();
                     }
-                    windowEvents[i]->pop();
+                    event_queues[i]->windowEvents.pop();
                 }
             }
         }
+    }
+
+    void ClientSystems::playerMoveEvent(Registry &ecs, SparseArray<components::EventQueues> &event_queues,
+                                        SparseArray<components::Velocity> &vel,
+                                        SparseArray<components::EntityType> &type)
+    {
+        std::queue<sf::Event> *events = nullptr;
+        sf::Event singleEvent = sf::Event();
+
+        for (int i = 0; i < event_queues.size(); ++i) {
+            if (event_queues.has_index(i)) {
+                events = &event_queues[i]->keyboardEvents;
+                break;
+            }
+        }
+        if (!events)
+            return;
+        if (events->empty())
+            return;
+
+        for (int i = 0; i < vel.size() && i < type.size(); i++) {
+            if (vel.has_index(i) && type.has_index(i)) {
+                if (type[i] != components::EntityType::CURRENT_PLAYER)
+                    continue;
+                while (!events->empty()) {
+                    singleEvent = events->front();
+                    if (singleEvent.type == sf::Event::KeyPressed) {
+                        switch (singleEvent.key.code) {
+                            case sf::Keyboard::Q:
+                                vel[i]->vx = -100;
+                                break;
+                            case sf::Keyboard::D:
+                                vel[i]->vx = 100;
+                                break;
+                            case sf::Keyboard::Z:
+                                vel[i]->vy = -100;
+                                break;
+                            case sf::Keyboard::S:
+                                vel[i]->vy = 100;
+                                break;
+                            default:
+                                break;
+
+                        }
+                    } else if (singleEvent.type == sf::Event::KeyReleased) {
+                        switch (singleEvent.key.code) {
+                            case sf::Keyboard::Q:
+                                vel[i]->vx = 0;
+                                break;
+                            case sf::Keyboard::D:
+                                vel[i]->vx = 0;
+                                break;
+                            case sf::Keyboard::Z:
+                                vel[i]->vy = 0;
+                                break;
+                            case sf::Keyboard::S:
+                                vel[i]->vy = 0;
+                                break;
+                            default:
+                                break;
+
+                        }
+                    }
+                    events->pop();
+                }
+            }
+        }
+
     }
 } // client

@@ -24,9 +24,10 @@ namespace ecs {
             static void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw,
                                    SparseArray<components::Size> &size);
             static void eventPollingSystem(Registry &ecs, SparseArray<components::Event> &event, SparseArray<components::Window> &window,
-                                           SparseArray<components::KeyboardEvents> &keyboardEvents, SparseArray<components::WindowEvents> &windowEvents);
-            static void windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window, SparseArray<components::WindowEvents> &windowEvents);
-
+                                           SparseArray<components::EventQueues> &event_queues);
+            static void windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window, SparseArray<components::EventQueues> &event_queues);
+            static void playerMoveEvent(Registry &ecs, SparseArray<components::EventQueues> &event_queues, SparseArray<components::Velocity> &vel,
+                                        SparseArray<components::EntityType> &type);
         protected:
 
         private:

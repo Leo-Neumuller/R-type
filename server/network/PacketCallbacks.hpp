@@ -21,6 +21,7 @@ namespace server {
 
             static void helloCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId);
             static void debugCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId, std::string data);
+            static void sendPosVelCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId, components::Position pos, components::Velocity vel);
         protected:
 
         private:

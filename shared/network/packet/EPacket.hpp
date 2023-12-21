@@ -17,6 +17,7 @@ enum EPacketResponse {
 enum EPacketClient {
     DEBUG_PACKET_CLIENT,
     CLIENT_HELLO,
+    CLIENT_SEND_POS_VEL,
     CLIENT_DISCONNECT
 };
 

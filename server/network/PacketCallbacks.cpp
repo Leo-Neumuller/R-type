@@ -47,17 +47,25 @@ namespace server {
             }
         }, 0.1);
 
-        server->getTimedEvents().addReocurringEvent([fromId, server]() {
-            server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(fromId, EPacketServer::FORCE_SET_POS_VEL, fromId, components::Position{0, (float)fromId * 100}, components::Velocity{100, 0});
-            server->setPlayerPos(fromId, components::Position{0, (float)fromId * 100});
-            server->setPlayerVel(fromId, components::Velocity{100, 0});
-        }, 1);
+//        server->getTimedEvents().addReocurringEvent([fromId, server]() {
+//            server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(fromId, EPacketServer::FORCE_SET_POS_VEL, fromId, components::Position{0, (float)fromId * 100}, components::Velocity{100, 0});
+//            server->setPlayerPos(fromId, components::Position{0, (float)fromId * 100});
+//            server->setPlayerVel(fromId, components::Velocity{100, 0});
+//        }, 1);
     }
 
     void PacketCallbacks::debugCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,
                                         std::string data)
     {
         std::cout << "Debug from client: " << data << std::endl;
+    }
+
+    void
+    PacketCallbacks::sendPosVelCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,
+                                        components::Position pos, components::Velocity vel)
+    {
+        server->setPlayerPos(fromId, pos);
+        server->setPlayerVel(fromId, vel);
     }
 
 } // Server

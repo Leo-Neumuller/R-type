@@ -16,9 +16,28 @@ namespace components {
 
     typedef sf::RectangleShape Drawable;
     typedef sf::Event Event;
-    typedef std::queue<sf::Event> KeyboardEvents;
-    typedef std::queue<sf::Event> WindowEvents;
+    struct EventQueues {
+        std::queue<sf::Event> keyboardEvents;
+        std::queue<sf::Event> windowEvents;
+    };
     typedef sf::RenderWindow *Window;
+    enum class EntityType {
+        CURRENT_PLAYER,
+        PLAYER,
+        ENEMY,
+        BACKGROUND,
+        BULLET,
+        OBSTACLE,
+        UI,
+        BUTTON,
+        TEXT,
+        CURSOR,
+        SOUND,
+        MUSIC,
+        ANIMATION,
+        PARTICLE,
+        UNKNOWN
+    };
 
 } // ecs
 

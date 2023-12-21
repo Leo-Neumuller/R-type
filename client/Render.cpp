@@ -26,8 +26,7 @@ namespace client {
 
         _ecs.addComponent<components::Window>(render_entity, &_window);
         _ecs.addComponent<components::Event>(render_entity, sf::Event());
-        _ecs.addComponent<components::KeyboardEvents>(render_entity, std::queue<sf::Event>());
-        _ecs.addComponent<components::WindowEvents>(render_entity, std::queue<sf::Event>());
+        _ecs.addComponent<components::EventQueues>(render_entity, {std::queue<sf::Event>(), std::queue<sf::Event>()});
         _clock.restart();
     }
 

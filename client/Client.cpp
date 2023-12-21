@@ -15,7 +15,7 @@
 namespace client {
 
     Client::Client() : _server_list(), _network(_network_handler), _packets_registry(), _network_handler(_server_list, _packets_registry),
-                        _server(nullptr), _connected(false), _ecs(), _renderer(_ecs), _current_player_id(0)
+                        _server(nullptr), _connected(false), _ecs(), _renderer(_ecs), _current_player_id(0), _timed_events()
     {
     }
 
@@ -39,6 +39,7 @@ namespace client {
         while (_renderer.isOpen()) {
             networkHandle();
             _ecs.runSystems();
+            _timed_events.runEvents(deltatime);
             deltatime = _renderer.render();
         }
         _network.stop();
@@ -69,6 +70,7 @@ namespace client {
     void Client::setup(float &deltatime)
     {
         registerPacketClient<std::string>(EPacketClient::DEBUG_PACKET_CLIENT);
+        registerPacketClient<components::Position, components::Velocity>(EPacketClient::CLIENT_SEND_POS_VEL);
 
         registerPacketServer<bool>(PacketCallbacks::helloCallback, EPacketServer::SERVER_HELLO);
         registerPacketServer<std::string>(PacketCallbacks::debugCallback, EPacketServer::DEBUG_PACKET_SERVER);
@@ -84,12 +86,13 @@ namespace client {
         _ecs.registerComponent<components::Size>();
         _ecs.registerComponent<components::Event>();
         _ecs.registerComponent<components::Window>();
-        _ecs.registerComponent<components::KeyboardEvents>();
-        _ecs.registerComponent<components::WindowEvents>();
+        _ecs.registerComponent<components::EventQueues>();
+        _ecs.registerComponent<components::EntityType>();
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
         _ecs.addSystem<components::Position, components::Drawable, components::Size>(ecs::ClientSystems::drawSystem);
-        _ecs.addSystem<components::Event, components::Window, components::KeyboardEvents, components::WindowEvents>(ecs::ClientSystems::eventPollingSystem);
-        _ecs.addSystem<components::Window, components::WindowEvents>(ecs::ClientSystems::windowEventsSystem);
+        _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
+        _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
+        _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType>(ecs::ClientSystems::playerMoveEvent);
     }
 
     bool Client::isConnected() const
@@ -111,21 +114,40 @@ namespace client {
         _ecs.addComponent(entity, components::Id{id});
         _ecs.addComponent(entity, components::Drawable{});
         _ecs.addComponent(entity, components::Size{100, 100});
-    }
-
-    int Client::getCurrentPlayerId() const
-    {
-        return _current_player_id;
-    }
-
-    void Client::setCurrentPlayerId(int currentPlayerId)
-    {
-        _current_player_id = currentPlayerId;
+        _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
     }
 
     Registry &Client::getEcs()
     {
         return _ecs;
+    }
+
+    void Client::setCurrentPlayer(int id)
+    {
+        auto &ids = getEcs().getComponent<components::Id>();
+        auto &entity_types = getEcs().getComponent<components::EntityType>();
+
+        for (auto entity : getEcs().getEntities()) {
+            if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == id) {
+                entity_types[entity] = components::EntityType::CURRENT_PLAYER;
+                break;
+            }
+        }
+        _current_player_id = id;
+        _timed_events.addReocurringEvent([this]() {
+            auto &ids = getEcs().getComponent<components::Id>();
+            auto &entity_types = getEcs().getComponent<components::EntityType>();
+
+            for (auto entity : getEcs().getEntities()) {
+                if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == _current_player_id) {
+                    auto &vel = getEcs().getComponent<components::Velocity>()[entity];
+                    auto &pos = getEcs().getComponent<components::Position>()[entity];
+
+                    _network_handler.serializeSendPacket<network::GenericPacket<std::any, components::Position, components::Velocity>>(0, EPacketClient::CLIENT_SEND_POS_VEL, pos.value(), vel.value());
+                    break;
+                }
+            }
+        }, 0.1);
     }
 
 

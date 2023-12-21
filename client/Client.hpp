@@ -16,6 +16,12 @@
 #include "Components.hpp"
 #include "Render.hpp"
 #include <chrono>
+#include "Systems.hpp"
+#include <utility>
+#include "ClientComponents.hpp"
+#include "ClientSystems.hpp"
+#include "Entity.hpp"
+#include "TimedEvents.hpp"
 
 namespace client {
 
@@ -42,9 +48,8 @@ namespace client {
             bool isConnected() const;
             void setConnected(bool connected);
             void registerNewPlayer(int id, components::Position pos);
-            int getCurrentPlayerId() const;
-            void setCurrentPlayerId(int currentPlayerId);
             Registry &getEcs();
+            void setCurrentPlayer(int id);
         protected:
 
         private:
@@ -60,6 +65,7 @@ namespace client {
             Registry _ecs;
             Render _renderer;
             int _current_player_id;
+            TimedEvents _timed_events;
 
     };
 

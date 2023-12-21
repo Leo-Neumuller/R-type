@@ -67,6 +67,7 @@ namespace server {
 
         registerPacketClient(PacketCallbacks::helloCallback, EPacketClient::CLIENT_HELLO);
         registerPacketClient<std::string>(PacketCallbacks::debugCallback, EPacketClient::DEBUG_PACKET_CLIENT);
+        registerPacketClient<components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketClient::CLIENT_SEND_POS_VEL);
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();

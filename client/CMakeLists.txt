@@ -32,7 +32,8 @@ add_executable(r-type_client
         ClientComponents.hpp
         ClientComponents.hpp
         ClientSystems.cpp
-        ClientSystems.hpp)
+        ClientSystems.hpp
+        TimedEvents.cpp)
 
 include_directories(../shared/)
 
