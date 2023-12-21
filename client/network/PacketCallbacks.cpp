@@ -48,11 +48,9 @@ namespace client {
         auto &ids = client->getEcs().getComponent<components::Id>();
 
         for (auto &entity : client->getEcs().getEntities()) {
-            std::cout << entity << " " << id << std::endl;
-            if (ids[entity] == id) {
+            if (ids.has_index(entity) && ids[entity] == id) {
                 client->getEcs().getComponent<components::Position>()[entity] = pos;
                 client->getEcs().getComponent<components::Velocity>()[entity] = vel;
-                std::cout << client->getEcs().getComponent<components::Velocity>()[entity]->vx << std::endl;
                 break;
             }
         }
@@ -64,10 +62,9 @@ namespace client {
         auto &ids = client->getEcs().getComponent<components::Id>();
 
         for (auto &entity : client->getEcs().getEntities()) {
-            if (ids[entity] == id) {
+            if (ids.has_index(entity) && ids[entity] == id) {
                 client->getEcs().getComponent<components::Position>()[entity] = pos;
                 client->getEcs().getComponent<components::Velocity>()[entity] = vel;
-                std::cout << pos.x << std::endl;
                 break;
             }
         }
