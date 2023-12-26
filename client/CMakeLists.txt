@@ -30,7 +30,8 @@ add_executable(r-type_client
         ../shared/Systems.cpp
         ../shared/Systems.hpp
         ClientComponents.hpp
-        ClientComponents.hpp)
+        ClientComponents.hpp
+        src/Loader.cpp)
 
 include_directories(../shared/)
 

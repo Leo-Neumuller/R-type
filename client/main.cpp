@@ -7,17 +7,20 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "src/TextureLoader/ParseTexture.hpp"
+#include "src/Loader.hpp"
 #include "Client.hpp"
 
-int main() {
-    client::Client client;
+int main()
+{
 
+
+    client::Client client;
     client.connectToServer("127.0.0.1", 4242);
     client.runClient();
+    return 0;
+}
 
-
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Texture Display");
+/*sf::RenderWindow window(sf::VideoMode(1920, 1080), "Texture Display");
     TextureLoader loader;
 
     try {
@@ -60,7 +63,4 @@ int main() {
             window.draw(sprite);
         }
         window.display();
-    }
-
-    return 0;
-}
+    }*/

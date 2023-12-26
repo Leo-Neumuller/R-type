@@ -14,7 +14,7 @@
 #include "SparseArray.hpp"
 #include <any>
 #include <algorithm>
-
+#include <functional>
 class Registry {
     public:
         using entity_t = size_t;

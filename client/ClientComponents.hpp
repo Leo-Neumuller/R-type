@@ -13,7 +13,7 @@
 
 namespace components {
 
-    typedef sf::RectangleShape Drawable;
+    typedef sf::Sprite Drawable;
 
 } // ecs
 

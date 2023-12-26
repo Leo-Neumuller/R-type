@@ -9,6 +9,7 @@
 #define R_TYPE_CLIENT_CLIENT_HPP
 
 #include <iostream>
+#include "src/Loader.hpp"
 #include "network/Network.hpp"
 #include "network/NetworkHandler.hpp"
 #include "network/NetworkClient.hpp"
@@ -16,6 +17,7 @@
 #include "Components.hpp"
 #include "Render.hpp"
 #include <chrono>
+#include "Registry.hpp"
 
 namespace client {
 
@@ -60,6 +62,7 @@ namespace client {
             Registry _ecs;
             Render _renderer;
             int _current_player_id;
+
 
     };
 

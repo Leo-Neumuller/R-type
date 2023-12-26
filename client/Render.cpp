@@ -9,7 +9,7 @@
 
 namespace client {
 
-    Render::Render(Registry &ecs) : _ecs(ecs), _window(), _clock()
+    Render::Render(Registry &ecs) : _ecs(ecs), _window(), _clock(), _texturesFonts()
     {
     }
 
@@ -33,6 +33,16 @@ namespace client {
         _window.clear();
 
         return _clock.restart().asSeconds();
+
+        Entity test(_ecs.spawnEntity());
+        _ecs.addComponent(test, components::Size{100, 100});
+        _ecs.addComponent(test, components::Position{100, 100});
+        _ecs.addComponent(test, components::Velocity{1, 0});
+
+        sf::Texture text;
+        _ecs.addComponent(test, components::Drawable (_texturesFonts.getTexture("player1.png")));
+
+
     }
 
     bool Render::isOpen()
@@ -47,7 +57,6 @@ namespace client {
         for (int i = 0; i < pos.size() && i < draw.size() && i < size.size(); i++) {
             if (pos.has_index(i) && draw.has_index(i) && size.has_index(i)) {
                 draw[i]->setPosition(pos[i]->x, pos[i]->y);
-                draw[i]->setSize(sf::Vector2f(size[i]->width, size[i]->height));
                 _window.draw(*draw[i]);
             }
         }
