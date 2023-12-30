@@ -81,6 +81,8 @@ namespace client {
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
+        _ecs.registerComponent<components::Anim>();
+
         _ecs.registerComponent<components::Id>();
         _ecs.registerComponent<components::Drawable>();
         _ecs.registerComponent<components::Size>();
@@ -93,6 +95,7 @@ namespace client {
         _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
         _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType>(ecs::ClientSystems::playerMoveEvent);
+        _ecs.addSystem<components::Drawable, components::Anim>(ecs::ClientSystems::spriteAnimation, deltatime);
     }
 
     bool Client::isConnected() const
@@ -113,6 +116,11 @@ namespace client {
         _ecs.addComponent(entity, components::Velocity{0, 0});
         _ecs.addComponent(entity, components::Id{id});
 
+        std::map<int, sf::IntRect> spriteRects;
+        for (int i = 0; i < 5; ++i)
+            spriteRects[i] = sf::IntRect(i * 58, 0, 58, 40);
+
+        _ecs.addComponent(entity, components::Anim{5, 0, 0.1f, 0.0f, spriteRects});
         _ecs.addComponent(entity, components::Drawable(_texturesFonts.getTexture("player1")));
         _ecs.addComponent(entity, components::Size{100, 100});
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});

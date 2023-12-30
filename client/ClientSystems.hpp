@@ -28,6 +28,7 @@ namespace ecs {
             static void windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window, SparseArray<components::EventQueues> &event_queues);
             static void playerMoveEvent(Registry &ecs, SparseArray<components::EventQueues> &event_queues, SparseArray<components::Velocity> &vel,
                                         SparseArray<components::EntityType> &type);
+            static void spriteAnimation(Registry &ecs, float deltatime, SparseArray<components::Drawable> &draw, SparseArray<components::Anim> &Anim);
         protected:
 
         private:

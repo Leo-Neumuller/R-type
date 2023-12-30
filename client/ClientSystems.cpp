@@ -139,4 +139,21 @@ namespace ecs {
         }
 
     }
+
+    void ClientSystems::spriteAnimation(Registry &ecs, float deltatime, SparseArray<components::Drawable> &draw, SparseArray<components::Anim> &Anim)
+    {
+        for (int i = 0; i < draw.size(); i++) {
+            if (Anim.has_index(i) && draw.has_index(i)) {
+                Anim[i]->animationTimer += deltatime;
+                if (Anim[i]->animationTimer >= Anim[i]->animationInterval) {
+                    Anim[i]->animationTimer = 0.0f;
+                    Anim[i]->actualFrame = (Anim[i]->actualFrame + 1);
+                    if (Anim[i]->actualFrame > Anim[i]->nbFrame - 1)
+                        Anim[i]->actualFrame = 0;
+                    draw[i]->setTextureRect(Anim[i]->spriteFrames.at(Anim[i]->actualFrame));
+                }
+            }
+        }
+    }
+
 } // client
