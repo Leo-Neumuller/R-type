@@ -37,7 +37,7 @@ namespace server {
 
         private:
             void setup(float &deltatime);
-            void networkLoop();
+            void networkHandler();
 
             template<typename... Args, typename Func>
             void registerPacketClient(Func func, EPacketClient packet) {

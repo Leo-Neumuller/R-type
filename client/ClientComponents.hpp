@@ -10,10 +10,34 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <queue>
 
 namespace components {
 
     typedef sf::Sprite Drawable;
+    typedef sf::Event Event;
+    struct EventQueues {
+        std::queue<sf::Event> keyboardEvents;
+        std::queue<sf::Event> windowEvents;
+    };
+    typedef sf::RenderWindow *Window;
+    enum class EntityType {
+        CURRENT_PLAYER,
+        PLAYER,
+        ENEMY,
+        BACKGROUND,
+        BULLET,
+        OBSTACLE,
+        UI,
+        BUTTON,
+        TEXT,
+        CURSOR,
+        SOUND,
+        MUSIC,
+        ANIMATION,
+        PARTICLE,
+        UNKNOWN
+    };
 
 } // ecs
 

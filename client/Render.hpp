@@ -35,7 +35,6 @@ namespace client {
             sf::RenderWindow _window;
             Registry &_ecs;
             sf::Clock _clock;
-            Loader _texturesFonts;
 
 
 

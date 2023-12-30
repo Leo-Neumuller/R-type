@@ -10,11 +10,9 @@
 #include "src/Loader.hpp"
 #include "Client.hpp"
 
-int main()
-{
-
-
+int main() {
     client::Client client;
+
     client.connectToServer("127.0.0.1", 4242);
     client.runClient();
     return 0;

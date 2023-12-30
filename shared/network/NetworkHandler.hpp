@@ -96,10 +96,10 @@ namespace network{
                 }
             }
 
-            void waitForPacket()
+            bool isPacketQueueEmpty()
             {
                 std::unique_lock<std::mutex> lock(_network_mutex);
-                _packet_condition_variable.wait(lock, [this] { return !_packet_stack.empty(); });
+                return _packet_stack.empty();
             }
 
             template<typename Type, typename... Args, typename TypePacket>

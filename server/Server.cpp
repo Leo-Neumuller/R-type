@@ -28,7 +28,6 @@ namespace server {
 
     void Server::runServer()
     {
-        _network_thread = std::thread(&Server::networkLoop, this);
         auto clock = std::chrono::high_resolution_clock::now();
         float deltatime = 0;
         float tick_duration = 40.96;
@@ -38,6 +37,7 @@ namespace server {
             auto newClock = std::chrono::high_resolution_clock::now();
             deltatime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(newClock - clock).count() / 1000;
             clock = newClock;
+            networkHandler();
             _ecs.runSystems();
             _timed_events.runEvents(deltatime);
             std::this_thread::sleep_for(std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(std::chrono::duration<float, std::milli>(tick_duration) - std::chrono::duration<float, std::milli>(std::chrono::high_resolution_clock::now() - newClock)));
@@ -45,10 +45,9 @@ namespace server {
 
     }
 
-    void Server::networkLoop()
+    void Server::networkHandler()
     {
-        while (true) {
-            _network_handler.waitForPacket();
+        if (!_network_handler.isPacketQueueEmpty()) {
             try {
                 _network_handler.threatPacket();
             } catch (std::exception &e) {
@@ -68,6 +67,7 @@ namespace server {
 
         registerPacketClient(PacketCallbacks::helloCallback, EPacketClient::CLIENT_HELLO);
         registerPacketClient<std::string>(PacketCallbacks::debugCallback, EPacketClient::DEBUG_PACKET_CLIENT);
+        registerPacketClient<components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketClient::CLIENT_SEND_POS_VEL);
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
