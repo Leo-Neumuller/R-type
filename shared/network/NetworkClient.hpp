@@ -11,6 +11,7 @@
 #include <iostream>
 #include "asio.hpp"
 #include <mutex>
+#include <functional>
 
 namespace network {
     class NetworkClient {

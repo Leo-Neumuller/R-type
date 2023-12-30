@@ -112,7 +112,8 @@ namespace client {
         _ecs.addComponent(entity, components::Position{pos.x, pos.y});
         _ecs.addComponent(entity, components::Velocity{0, 0});
         _ecs.addComponent(entity, components::Id{id});
-        _ecs.addComponent(entity, components::Drawable{});
+
+        _ecs.addComponent(entity, components::Drawable(_texturesFonts.getTexture("player1")));
         _ecs.addComponent(entity, components::Size{100, 100});
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
     }

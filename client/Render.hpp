@@ -14,6 +14,8 @@
 #include <memory>
 #include "Components.hpp"
 #include "ClientComponents.hpp"
+#include "Entity.hpp"
+#include "src/Loader.hpp"
 
 namespace client {
 
@@ -33,6 +35,8 @@ namespace client {
             sf::RenderWindow _window;
             Registry &_ecs;
             sf::Clock _clock;
+
+
 
     };
 

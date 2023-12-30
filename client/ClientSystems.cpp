@@ -27,7 +27,6 @@ namespace ecs {
         for (int i = 0; i < pos.size() && i < draw.size() && i < size.size(); i++) {
             if (pos.has_index(i) && draw.has_index(i) && size.has_index(i)) {
                 draw[i]->setPosition(pos[i]->x, pos[i]->y);
-                draw[i]->setSize(sf::Vector2f(size[i]->width, size[i]->height));
                 window->draw(*draw[i]);
             }
         }

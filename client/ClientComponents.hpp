@@ -14,7 +14,7 @@
 
 namespace components {
 
-    typedef sf::RectangleShape Drawable;
+    typedef sf::Sprite Drawable;
     typedef sf::Event Event;
     struct EventQueues {
         std::queue<sf::Event> keyboardEvents;

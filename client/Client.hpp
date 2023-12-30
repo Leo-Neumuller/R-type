@@ -9,6 +9,7 @@
 #define R_TYPE_CLIENT_CLIENT_HPP
 
 #include <iostream>
+#include "src/Loader.hpp"
 #include "network/Network.hpp"
 #include "network/NetworkHandler.hpp"
 #include "network/NetworkClient.hpp"
@@ -66,6 +67,7 @@ namespace client {
             Render _renderer;
             int _current_player_id;
             TimedEvents _timed_events;
+            Loader _texturesFonts;
 
     };
 
