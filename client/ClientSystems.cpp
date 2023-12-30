@@ -29,6 +29,10 @@ namespace ecs {
                 draw[i]->setPosition(pos[i]->x, pos[i]->y);
                 window->draw(*draw[i]);
             }
+            if (i == 0 && pos[i]->x <= -1920) {
+                std::cout << pos[i]->x << std::endl;
+                pos[i]->x = 0;
+            }
         }
     }
 

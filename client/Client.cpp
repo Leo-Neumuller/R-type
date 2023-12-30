@@ -93,6 +93,7 @@ namespace client {
         _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
         _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType>(ecs::ClientSystems::playerMoveEvent);
+        setupBackground();
     }
 
     bool Client::isConnected() const
@@ -116,6 +117,18 @@ namespace client {
         _ecs.addComponent(entity, components::Drawable(_texturesFonts.getTexture("player1")));
         _ecs.addComponent(entity, components::Size{100, 100});
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
+    }
+
+    void Client::setupBackground()
+    {
+        auto entity = _ecs.spawnEntity();
+
+        _ecs.addComponent(entity, components::Position{0, 0});
+        _ecs.addComponent(entity, components::Velocity{-500, 0});
+        _ecs.addComponent(entity, components::Id{10});
+        _ecs.addComponent(entity, components::Drawable{_texturesFonts.getTexture("background")});
+        _ecs.addComponent(entity, components::Size{3840, 1080});
+        _ecs.addComponent(entity, components::EntityType{components::EntityType::BACKGROUND});
     }
 
     Registry &Client::getEcs()
