@@ -149,7 +149,6 @@ class Registry {
         std::map<entity_t , std::vector<std::function<void()>>> _free_entities;
         std::vector<entity_t> _entities;
 
-
 };
 
 

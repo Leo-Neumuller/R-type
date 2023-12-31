@@ -46,6 +46,8 @@ namespace client {
                 _packets_registry.registerPacketClient<Args...>([](int id, Args... args) {}, packet);
             }
 
+
+
             bool isConnected() const;
             void setConnected(bool connected);
             void registerNewPlayer(int id, components::Position pos);

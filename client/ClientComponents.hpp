@@ -9,6 +9,7 @@
 #define R_TYPE_CLIENT_CLIENTCOMPONENTS_HPP
 
 #include <iostream>
+#include "src/Loader.hpp"
 #include <SFML/Graphics.hpp>
 #include <queue>
 
@@ -20,6 +21,7 @@ namespace components {
         std::queue<sf::Event> keyboardEvents;
         std::queue<sf::Event> windowEvents;
     };
+    typedef const std::map<std::string, sf::Texture> Textures;
     typedef sf::RenderWindow *Window;
     enum class EntityType {
         CURRENT_PLAYER,

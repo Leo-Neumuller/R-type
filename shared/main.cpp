@@ -89,7 +89,6 @@ void event_system(Registry &r, SparseArray<sf::Event*> &events) {
                                 break;
                             default:
                                 break;
-
                         }
                     }
                 }

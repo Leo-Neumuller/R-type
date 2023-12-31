@@ -36,6 +36,10 @@ namespace components {
         float animationTimer;
         std::map<int, sf::IntRect> spriteFrames;
     };
+    struct MissileStruct {
+        float lifeTimer;
+        bool active;
+    };
 
     typedef int Id;
 

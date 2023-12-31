@@ -75,7 +75,6 @@ const std::map<std::string, sf::Texture>& Loader::getAllTextures() const
 
 sf::Texture& Loader::getTexture(const std::string& id)
 {
-    std::cout << id << " loaded." << std::endl;
     return _textures.at(id);
 }
 

@@ -7,6 +7,8 @@
 
 #include "ClientSystems.hpp"
 
+
+
 namespace ecs {
 
 
@@ -74,7 +76,8 @@ namespace ecs {
 
     void ClientSystems::playerMoveEvent(Registry &ecs, SparseArray<components::EventQueues> &event_queues,
                                         SparseArray<components::Velocity> &vel,
-                                        SparseArray<components::EntityType> &type)
+                                        SparseArray<components::EntityType> &type,
+                                        SparseArray<components::Position> &pos)
     {
         std::queue<sf::Event> *events = nullptr;
         sf::Event singleEvent = sf::Event();
@@ -110,6 +113,10 @@ namespace ecs {
                             case sf::Keyboard::S:
                                 vel[i]->vy = 100;
                                 break;
+                            case sf::Keyboard::Space:
+                                if (pos.has_index(i))
+                                    playerMissile(ecs, i, pos[i]->x, pos[i]->y);
+                                break;
                             default:
                                 break;
 
@@ -137,8 +144,46 @@ namespace ecs {
                 }
             }
         }
+    }
+
+
+
+    void ClientSystems::playerMissile(Registry &ecs, int index, float x, float y)
+    {
+        auto loaderTmp = ecs.getComponent<Loader *>();
+        Loader *loader;
+
+
+        for (int i = 0; i < loaderTmp.size(); ++i) {
+            if (loaderTmp.has_index(i)) {
+                loader = loaderTmp[i].value();
+                break;
+            }
+        }
+        if (!loader)
+            return;
+
+        auto missile (ecs.spawnEntity());
+
+        ecs.addComponent(missile, components::Position{x + 40, y});
+        ecs.addComponent(missile, components::Velocity{200, 0});
+
+        std::map<int, sf::IntRect> spriteRects;
+        for (int i = 0; i < 6; ++i)
+            spriteRects[i] = sf::IntRect(i * 30, 0, 30, 30);
+        ecs.addComponent(missile, components::MissileStruct{0.0f, true});
+        sf::Sprite tmp (loader->getTexture("missile"));
+        tmp.setTextureRect(spriteRects[0]);
+
+        ecs.addComponent(missile, components::Anim{6, 0, 0.1f, 0.0f, spriteRects});
+        ecs.addComponent(missile, components::Drawable(tmp));
+        ecs.addComponent(missile, components::Size{30, 30});
+        ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET});
 
     }
+
+
+
 
     void ClientSystems::spriteAnimation(Registry &ecs, float deltatime, SparseArray<components::Drawable> &draw, SparseArray<components::Anim> &Anim)
     {
