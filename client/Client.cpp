@@ -139,7 +139,6 @@ namespace client {
 
         _ecs.addComponent(entity, components::Position{0, 0});
         _ecs.addComponent(entity, components::Velocity{-500, 0});
-        _ecs.addComponent(entity, components::Id{10});
         _ecs.addComponent(entity, components::Drawable{_texturesFonts.getTexture("background")});
         _ecs.addComponent(entity, components::Size{3840, 1080});
         _ecs.addComponent(entity, components::EntityType{components::EntityType::BACKGROUND});
