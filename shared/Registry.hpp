@@ -15,7 +15,7 @@
 #include <any>
 #include <map>
 #include <algorithm>
-
+#include <functional>
 class Registry {
     public:
         using entity_t = size_t;
@@ -148,7 +148,6 @@ class Registry {
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::map<entity_t , std::vector<std::function<void()>>> _free_entities;
         std::vector<entity_t> _entities;
-
 
 };
 

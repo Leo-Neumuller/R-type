@@ -21,4 +21,16 @@ namespace ecs {
         }
     }
 
+    void Systems::manageMissiles(Registry &ecs, float deltatime, SparseArray<components::MissileStruct> &Missiles)
+    {
+        for (int i = 0; i < Missiles.size(); i++) {
+            if (Missiles.has_index(i)) {
+                Missiles[i]->lifeTimer += deltatime;
+                if (Missiles[i]->lifeTimer >= 3.0f) {
+                    ecs.killEntity(i);
+                }
+            }
+        }
+    }
+
 } // ecs

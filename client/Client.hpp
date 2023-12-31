@@ -9,6 +9,7 @@
 #define R_TYPE_CLIENT_CLIENT_HPP
 
 #include <iostream>
+#include "src/Loader.hpp"
 #include "network/Network.hpp"
 #include "network/NetworkHandler.hpp"
 #include "network/NetworkClient.hpp"
@@ -45,6 +46,8 @@ namespace client {
                 _packets_registry.registerPacketClient<Args...>([](int id, Args... args) {}, packet);
             }
 
+
+
             bool isConnected() const;
             void setConnected(bool connected);
             void registerNewPlayer(int id, components::Position pos);
@@ -66,6 +69,7 @@ namespace client {
             Render _renderer;
             int _current_player_id;
             TimedEvents _timed_events;
+            Loader _texturesFonts;
 
     };
 

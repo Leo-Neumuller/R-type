@@ -22,7 +22,9 @@ namespace ecs {
 
             static void moveSystem(Registry &r, float &deltaTime, SparseArray<components::Position> &pos,
                                    SparseArray<components::Velocity> &vel);
-        protected:
+            static void manageMissiles(Registry &ecs, float deltatime, SparseArray<components::MissileStruct> &Missiles);
+
+    protected:
 
         private:
 

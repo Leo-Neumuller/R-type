@@ -9,6 +9,8 @@
 #define R_TYPE_SERVER_COMPONENTS_HPP
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
+
 
 namespace components {
 
@@ -25,6 +27,18 @@ namespace components {
     struct Size {
         float width;
         float height;
+    };
+
+    struct Anim {
+        int nbFrame;
+        int actualFrame;
+        float animationInterval;
+        float animationTimer;
+        std::map<int, sf::IntRect> spriteFrames;
+    };
+    struct MissileStruct {
+        float lifeTimer;
+        bool active;
     };
 
     typedef int Id;
