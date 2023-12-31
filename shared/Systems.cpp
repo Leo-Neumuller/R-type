@@ -26,7 +26,7 @@ namespace ecs {
         for (int i = 0; i < Missiles.size(); i++) {
             if (Missiles.has_index(i)) {
                 Missiles[i]->lifeTimer += deltatime;
-                if (Missiles[i]->lifeTimer >= 3.0f) {
+                if (Missiles[i]->lifeTimer >= 7.0f) {
                     ecs.killEntity(i);
                 }
             }
