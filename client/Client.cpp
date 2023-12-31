@@ -127,8 +127,12 @@ namespace client {
         for (int i = 0; i < 5; ++i)
             spriteRects[i] = sf::IntRect(i * 58, 0, 58, 40);
 
+        int n = id;
+        for (; n > 4;)
+            n -= 5;
+
         _ecs.addComponent(entity, components::Anim{5, 0, 0.1f, 0.0f, spriteRects});
-        _ecs.addComponent(entity, components::Drawable(_texturesFonts.getTexture("player1")));
+        _ecs.addComponent(entity, components::Drawable(_texturesFonts.getTexture("player" + std::to_string(n + 1))));
         _ecs.addComponent(entity, components::Size{58, 40});
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
     }
