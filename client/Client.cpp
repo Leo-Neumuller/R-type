@@ -96,6 +96,7 @@ namespace client {
         _ecs.addSystem<components::Position, components::Drawable, components::Size>(ecs::ClientSystems::drawSystem);
         _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
         _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
+        setupBackground();
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType, components::Position>(ecs::ClientSystems::playerMoveEvent);
         _ecs.addSystem<components::Drawable, components::Anim>(ecs::ClientSystems::spriteAnimation, deltatime);
         _ecs.addSystem<components::MissileStruct>(ecs::Systems::manageMissiles, deltatime);
@@ -130,6 +131,18 @@ namespace client {
         _ecs.addComponent(entity, components::Drawable(_texturesFonts.getTexture("player1")));
         _ecs.addComponent(entity, components::Size{58, 40});
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
+    }
+
+    void Client::setupBackground()
+    {
+        auto entity = _ecs.spawnEntity();
+
+        _ecs.addComponent(entity, components::Position{0, 0});
+        _ecs.addComponent(entity, components::Velocity{-500, 0});
+        _ecs.addComponent(entity, components::Id{10});
+        _ecs.addComponent(entity, components::Drawable{_texturesFonts.getTexture("background")});
+        _ecs.addComponent(entity, components::Size{3840, 1080});
+        _ecs.addComponent(entity, components::EntityType{components::EntityType::BACKGROUND});
     }
 
     Registry &Client::getEcs()

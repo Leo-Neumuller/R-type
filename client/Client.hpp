@@ -53,6 +53,7 @@ namespace client {
             void registerNewPlayer(int id, components::Position pos);
             Registry &getEcs();
             void setCurrentPlayer(int id);
+            void setupBackground();
         protected:
 
         private:
