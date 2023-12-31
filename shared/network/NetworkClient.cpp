@@ -13,7 +13,8 @@
 namespace network {
     NetworkClient::NetworkClient(int id, asio::ip::udp::endpoint &endpoint,
                                  std::function<void(const std::vector<char> &)> sendCallBack)
-            : _id(id), _endpoint(endpoint), _buffer_for_packet(), _buffered_size(-1), _buffered_id(-1), _connected(false), _send_callback(std::move(sendCallBack))
+            : _id(id), _endpoint(endpoint), _buffer_for_packet(), _buffered_size(-1),
+            _buffered_id(-1), _connected(false), _send_callback(std::move(sendCallBack)), _buffered_packet_count(-1), _packets()
     {
 
     }
@@ -59,9 +60,22 @@ namespace network {
 
     void NetworkClient::send(std::vector<char> &data)
     {
-//        std::lock_guard<std::mutex> lock(_mutex);
-
         _send_callback(data);
+    }
+
+    int NetworkClient::getBufferedPacketCount() const
+    {
+        return _buffered_packet_count;
+    }
+
+    void NetworkClient::setBufferedPacketCount(int bufferedPacketCount)
+    {
+        _buffered_packet_count = bufferedPacketCount;
+    }
+
+    std::map<int, std::shared_ptr<IPacket *>> &NetworkClient::getPackets()
+    {
+        return _packets;
     }
 
 }

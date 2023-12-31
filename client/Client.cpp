@@ -47,13 +47,18 @@ namespace client {
 
     void Client::networkHandle()
     {
-            if (!_network_handler.isPacketQueueEmpty()) {
+            while (!_network_handler.isPacketQueueEmpty()) {
                 _server = &_server_list.begin()->second;
                 try {
                     _network_handler.threatPacket();
                 } catch (std::exception &e) {
                     std::cerr << "invalid packet from server: " << e.what() << std::endl;
                 }
+            }
+            try {
+                _network_handler.runPackets();
+            } catch (std::exception &e) {
+                std::cerr << "invalid packet from server: " << e.what() << std::endl;
             }
     }
 
@@ -92,10 +97,14 @@ namespace client {
         _ecs.registerComponent<components::Window>();
         _ecs.registerComponent<components::EventQueues>();
         _ecs.registerComponent<components::EntityType>();
+        _ecs.registerComponent<components::NetworkHandler>();
+        _ecs.registerComponent<components::LastVelocity>();
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
         _ecs.addSystem<components::Position, components::Drawable, components::Size>(ecs::ClientSystems::drawSystem);
         _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
         _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
+        _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType, components::Position>(ecs::ClientSystems::playerMoveEvent);
+        _ecs.addSystem<components::Velocity, components::Position, components::EntityType, components::NetworkHandler, components::LastVelocity>(ecs::ClientSystems::playerMoveNetwork, deltatime);
         setupBackground();
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType, components::Position>(ecs::ClientSystems::playerMoveEvent);
         _ecs.addSystem<components::Drawable, components::Anim>(ecs::ClientSystems::spriteAnimation, deltatime);
@@ -121,6 +130,7 @@ namespace client {
 
         _ecs.addComponent(entity, components::Position{pos.x, pos.y});
         _ecs.addComponent(entity, components::Velocity{0, 0});
+        _ecs.addComponent(entity, components::LastVelocity{0, 0});
         _ecs.addComponent(entity, components::Id{id});
 
         std::map<int, sf::IntRect> spriteRects;
@@ -161,24 +171,11 @@ namespace client {
         for (auto entity : getEcs().getEntities()) {
             if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == id) {
                 entity_types[entity] = components::EntityType::CURRENT_PLAYER;
+                _ecs.addComponent(entity, &_network_handler);
                 break;
             }
         }
         _current_player_id = id;
-        _timed_events.addReocurringEvent([this]() {
-            auto &ids = getEcs().getComponent<components::Id>();
-            auto &entity_types = getEcs().getComponent<components::EntityType>();
-
-            for (auto entity : getEcs().getEntities()) {
-                if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == _current_player_id) {
-                    auto &vel = getEcs().getComponent<components::Velocity>()[entity];
-                    auto &pos = getEcs().getComponent<components::Position>()[entity];
-
-                    _network_handler.serializeSendPacket<network::GenericPacket<std::any, components::Position, components::Velocity>>(0, EPacketClient::CLIENT_SEND_POS_VEL, pos.value(), vel.value());
-                    break;
-                }
-            }
-        }, 0.1);
     }
 
 

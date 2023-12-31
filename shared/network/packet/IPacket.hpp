@@ -20,6 +20,8 @@ namespace network {
             virtual void deserialize(std::vector<char> &data) = 0;
             virtual int getSizeRequired() = 0;
             virtual void handleData(int fromId) = 0;
+            virtual void setPacketCount(int packetCount) = 0;
+            virtual int getPacketCount() = 0;
     };
 
 } // Server

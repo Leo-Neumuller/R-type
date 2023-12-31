@@ -12,6 +12,8 @@
 #include "asio.hpp"
 #include <mutex>
 #include <functional>
+#include <IPacket.hpp>
+#include <map>
 
 namespace network {
     class NetworkClient {
@@ -28,6 +30,9 @@ namespace network {
             void setBufferedId(short bufferedId);
             bool isConnected() const;
             void setConnected(bool connected);
+            int getBufferedPacketCount() const;
+            void setBufferedPacketCount(int bufferedPacketCount);
+            std::map<int, std::shared_ptr<IPacket *>> &getPackets();
         protected:
 
         private:
@@ -36,8 +41,10 @@ namespace network {
             std::vector<char> _buffer_for_packet;
             int _buffered_size;
             short _buffered_id;
+            int _buffered_packet_count;
             bool _connected;
             std::function<void(const std::vector<char> &)> _send_callback;
+            std::map<int, std::shared_ptr<IPacket *>> _packets;
 
     };
 

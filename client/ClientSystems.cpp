@@ -7,8 +7,6 @@
 
 #include "ClientSystems.hpp"
 
-
-
 namespace ecs {
 
 
@@ -26,13 +24,14 @@ namespace ecs {
         }
         if (!window)
             return;
+        if (!window->isOpen())
+            return;
         for (int i = 0; i < pos.size() && i < draw.size() && i < size.size(); i++) {
             if (pos.has_index(i) && draw.has_index(i) && size.has_index(i)) {
                 draw[i]->setPosition(pos[i]->x, pos[i]->y);
                 window->draw(*draw[i]);
             }
             if (i == 0 && pos[i]->x <= -1920) {
-                std::cout << pos[i]->x << std::endl;
                 pos[i]->x = 0;
             }
         }
@@ -44,6 +43,12 @@ namespace ecs {
     {
         for (int i = 0; i < event.size() && i < window.size(); i++) {
             if (event.has_index(i) && window.has_index(i) && event_queues.has_index(i)) {
+                if (!(*window[i]))
+                    continue;
+                if (!(*window[i])->isOpen())
+                    continue;
+
+
                 while ((*window[i])->pollEvent((*event[i]))) {
                     switch ((*event[i]).type) {
                         case sf::Event::Closed:
@@ -186,8 +191,24 @@ namespace ecs {
 
     }
 
-
-
+    void ClientSystems::playerMoveNetwork(Registry &ecs, float &deltatime, SparseArray<components::Velocity> &vel,
+                                          SparseArray<components::Position> &pos,
+                                          SparseArray<components::EntityType> &type,
+                                          SparseArray<components::NetworkHandler> &network_handler,
+                                          SparseArray<components::LastVelocity> &last_vel)
+    {
+        for (int i = 0; i < vel.size() && i < type.size() && i < pos.size() && i < network_handler.size() && i < last_vel.size(); i++) {
+            if (!vel.has_index(i) || !type.has_index(i) || !network_handler.has_index(i) || !pos.has_index(i) || !last_vel.has_index(i))
+                continue;
+            if (type[i] != components::EntityType::CURRENT_PLAYER)
+                continue;
+            if (vel[i]->vx == last_vel[i]->vx && vel[i]->vy == last_vel[i]->vy)
+                continue;
+            network_handler[i].value()->serializeSendPacket<network::GenericPacket<std::any, components::Position, components::Velocity>>(0, EPacketClient::CLIENT_SEND_POS_VEL, pos[i].value(), vel[i].value());
+            last_vel[i]->vx = vel[i]->vx;
+            last_vel[i]->vy = vel[i]->vy;
+        }
+    }
 
     void ClientSystems::spriteAnimation(Registry &ecs, float deltatime, SparseArray<components::Drawable> &draw, SparseArray<components::Anim> &Anim)
     {

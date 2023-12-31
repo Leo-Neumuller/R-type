@@ -37,6 +37,7 @@ namespace client {
     void PacketCallbacks::clientBaseInfoCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                                  components::Position &pos)
     {
+        std::cout << "testtttttt" << std::endl;
         client->registerNewPlayer(id, pos);
         client->setCurrentPlayer(id);
 
@@ -60,15 +61,19 @@ namespace client {
                                              components::Position &pos, components::Velocity &vel)
     {
         auto &ids = client->getEcs().getComponent<components::Id>();
+        auto &poss = client->getEcs().getComponent<components::Position>();
+        auto &vels = client->getEcs().getComponent<components::Velocity>();
 
         for (auto &entity : client->getEcs().getEntities()) {
-            if (ids.has_index(entity) && ids[entity] == id) {
-                client->getEcs().getComponent<components::Position>()[entity] = pos;
+            if (ids.has_index(entity) && poss.has_index(entity) && vels.has_index(entity) && ids[entity] == id) {
                 client->getEcs().getComponent<components::Velocity>()[entity] = vel;
+
+                if (poss[entity].value().x - pos.x > 20 || poss[entity].value().y - pos.y > 20 || poss[entity].value().x - pos.x < -20 || poss[entity].value().y - pos.y < -20) {
+                    client->getEcs().getComponent<components::Position>()[entity] = pos;
+                }
                 break;
             }
         }
-
     }
 
 } // client
