@@ -24,7 +24,7 @@ namespace network{
     class NetworkHandler {
         public:
             NetworkHandler(std::map<int, NetworkClient> &_clients, PacketsRegistry &packets_registry) : _id_generator(), _clients(_clients), _network_mutex(), _packet_mutex(), _packet_stack(),
-                                                                                                                        _packet_condition_variable(), _packets_registry(packets_registry)
+                                                                                                                        _packet_condition_variable(), _packets_registry(packets_registry), _send_packet_count(0)
             {
             }
 
@@ -61,17 +61,19 @@ namespace network{
                 int cliend_id = _packet_stack.top().first;
                 int size = _clients.at(cliend_id).getBufferedSize();
                 short packet_id = _clients.at(cliend_id).getBufferedId();
+                int packet_count = _clients.at(cliend_id).getBufferedPacketCount();
 
                 _clients.at(cliend_id).getBufferForPacket().insert(
                         _clients.at(cliend_id).getBufferForPacket().end(),
                         _packet_stack.top().second.begin(), _packet_stack.top().second.end());
                 _packet_stack.pop();
-                if (packet_id != -1 && size != -1) {
-                    _threadDataPacket(size, packet_id, cliend_id);
+                if (packet_id != -1 && size != -1 && packet_count != -1) {
+                    _threadDataPacket(size, packet_id, cliend_id, packet_count);
                     packet_id = -1;
                     size = -1;
+                    packet_count = -1;
                 }
-                while (_clients.at(cliend_id).getBufferForPacket().size() >= sizeof(int) + sizeof(short)) {
+                while (_clients.at(cliend_id).getBufferForPacket().size() >= sizeof(int) + sizeof(short) + sizeof(int)) {
                     std::memcpy(&size, _clients.at(cliend_id).getBufferForPacket().data(), sizeof(int));
                     _clients.at(cliend_id).getBufferForPacket().erase(_clients.at(cliend_id).getBufferForPacket().begin(),
                                                                       _clients.at(cliend_id).getBufferForPacket().begin() +
@@ -80,19 +82,25 @@ namespace network{
                     _clients.at(cliend_id).getBufferForPacket().erase(_clients.at(cliend_id).getBufferForPacket().begin(),
                                                                       _clients.at(cliend_id).getBufferForPacket().begin() +
                                                                       sizeof(short));
+                    std::memcpy(&packet_count, _clients.at(cliend_id).getBufferForPacket().data(), sizeof(int));
+                    _clients.at(cliend_id).getBufferForPacket().erase(_clients.at(cliend_id).getBufferForPacket().begin(),
+                                                                      _clients.at(cliend_id).getBufferForPacket().begin() +
+                                                                      sizeof(int));
                     if (_clients.at(cliend_id).getBufferForPacket().size() < size) {
                         _clients.at(cliend_id).setBufferedSize(size);
                         _clients.at(cliend_id).setBufferedId(packet_id);
+                        _clients.at(cliend_id).setBufferedPacketCount(packet_count);
                         return;
                     }
-                    if (size < 0 || packet_id < 0) {
+                    if (size < 0 || packet_id < 0 || packet_count < 0) {
                         _clients.at(cliend_id).getBufferForPacket().clear();
                         return;
                     }
                     std::cout << "Packet received from client " << cliend_id << std::endl;
                     std::cout << "packet id: " << packet_id << std::endl;
                     std::cout << "size: " << size << std::endl;
-                    _threadDataPacket(size, packet_id, cliend_id);
+                    std::cout << "count: " << packet_count << std::endl;
+                    _threadDataPacket(size, packet_id, cliend_id, packet_count);
                 }
             }
 
@@ -108,8 +116,12 @@ namespace network{
                 std::shared_ptr<std::vector<char>> data = cast->serialize(args...);
                 int size = static_cast<int>(data->size());
 
+                _send_packet_count++;
+
+                data->insert(data->begin(), (char *)&_send_packet_count, (char *)&_send_packet_count + sizeof(int));
                 data->insert(data->begin(), (char *)&packet_id, (char *)&packet_id + sizeof(short ));
                 data->insert(data->begin(), (char *)&size, (char *)&size + sizeof(int));
+
 
                 _clients.at(client_id).send(*data);
             }
@@ -118,41 +130,53 @@ namespace network{
             std::shared_ptr<std::vector<char>> serializePacket(TypePacket packet_id, Args... args) {
                 auto cast = dynamic_cast<Type *>(*_packets_registry.getPacket(packet_id));
                 std::shared_ptr<std::vector<char>> data = cast->serialize(args...);
-                int size = data->size();
+                int size = static_cast<int>(data->size());
 
+                _send_packet_count++;
+
+                data->insert(data->begin(), (char *)&_send_packet_count, (char *)&_send_packet_count + sizeof(int));
                 data->insert(data->begin(), (char *)&packet_id, (char *)&packet_id + sizeof(short ));
                 data->insert(data->begin(), (char *)&size, (char *)&size + sizeof(int));
 
                 return data;
             }
 
+            void runPackets()
+            {
+                for (auto &client : _clients) {
+                    for (auto &packet : client.second.getPackets()) {
+                        if (packet.second == nullptr)
+                            continue;
+                        (*packet.second)->handleData(client.first);
+                    }
+
+                    client.second.getPackets().clear();
+                }
+            }
+
         protected:
 
         private:
-            void _threadDataPacket(int size, short packet_id, int client_id)
+            void _threadDataPacket(int size, short packet_id, int client_id, int packet_count)
             {
-                if (size < 0 || packet_id < 0) {
+                if (size < 0 || packet_id < 0 || packet_count < 0) {
                     _clients.at(client_id).getBufferForPacket().clear();
                     return;
                 }
                 if (_clients.at(client_id).getBufferForPacket().size() < size) {
                     _clients.at(client_id).setBufferedSize(size);
                     _clients.at(client_id).setBufferedId(packet_id);
+                    _clients.at(client_id).setBufferedPacketCount(packet_count);
                     return;
                 }
-                std::unique_ptr<IPacket *> packet = _packets_registry.getPacket(static_cast<FromType>(packet_id));
+                std::shared_ptr<IPacket *> packet = _packets_registry.getPacket(static_cast<FromType>(packet_id));
 
                 if (packet == nullptr) {
                     _clients.at(client_id).getBufferForPacket().clear();
                     return;
                 }
-//                if ((*packet)->getSizeRequired() > _clients.at(client_id).getBufferForPacket().size()) {
-//                    _clients.at(client_id).setBufferedSize((*packet)->getSizeRequired());
-//                    _clients.at(client_id).setBufferedId(packet_id);
-//                    return;
-//                }
                 (*packet)->deserialize(_clients.at(client_id).getBufferForPacket());
-                (*packet)->handleData(client_id);
+                _clients.at(client_id).getPackets().emplace(packet_count, packet);
             }
 
             void handler(std::any data...)
@@ -167,6 +191,7 @@ namespace network{
             std::stack<std::pair<int, std::vector<char>>> _packet_stack;
             std::condition_variable _packet_condition_variable;
             PacketsRegistry &_packets_registry;
+            int _send_packet_count;
 
     };
 

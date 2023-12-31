@@ -13,6 +13,8 @@
 #include "Components.hpp"
 #include "SparseArray.hpp"
 #include "ClientComponents.hpp"
+#include "network/NetworkHandler.hpp"
+#include "network/NetworkClient.hpp"
 
 namespace ecs {
 
@@ -28,6 +30,11 @@ namespace ecs {
             static void windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window, SparseArray<components::EventQueues> &event_queues);
             static void playerMoveEvent(Registry &ecs, SparseArray<components::EventQueues> &event_queues, SparseArray<components::Velocity> &vel,
                                         SparseArray<components::EntityType> &type);
+            static void playerStopedMoveEvent(Registry &ecs, SparseArray<components::Velocity> &vel, SparseArray<components::Position> &pos,
+                                               SparseArray<components::EntityType> &type, SparseArray<components::NetworkHandler> &network_handler);
+            static void playerMoveNetwork(Registry &ecs, float &deltatime, SparseArray<components::Velocity> &vel, SparseArray<components::Position> &pos,
+                                              SparseArray<components::EntityType> &type, SparseArray<components::NetworkHandler> &network_handler,
+                                              SparseArray<components::LastVelocity> &last_vel);
         protected:
 
         private:

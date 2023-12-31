@@ -23,7 +23,7 @@ namespace network {
     template<typename Func, typename... Args>
     class GenericPacket : public IPacket {
         public:
-            explicit GenericPacket(Func func) : _size(0), _func(func) {
+            explicit GenericPacket(Func func) : _size(0), _func(func), _packet_count(-1) {
                 _nb_params = sizeof...(Args);
                 (addParamSize<Args>(), ...);
             };
@@ -54,6 +54,16 @@ namespace network {
             {
                 _fromId = fromId;
                 execFuncWithData<Args...>();
+            }
+
+            void setPacketCount(int packetCount) override
+            {
+                _packet_count = packetCount;
+            }
+
+            int getPacketCount() override
+            {
+                return _packet_count;
             }
 
         protected:
@@ -147,6 +157,7 @@ namespace network {
             int _size;
             Func _func;
             int _fromId;
+            int _packet_count;
 
     };
 

@@ -47,12 +47,17 @@ namespace server {
 
     void Server::networkHandler()
     {
-        if (!_network_handler.isPacketQueueEmpty()) {
+        while (!_network_handler.isPacketQueueEmpty()) {
             try {
                 _network_handler.threatPacket();
             } catch (std::exception &e) {
                 std::cerr << "invalid packet from client: " << e.what() << std::endl;
             }
+        }
+        try {
+            _network_handler.runPackets();
+        } catch (std::exception &e) {
+            std::cerr << "invalid packet from server: " << e.what() << std::endl;
         }
     }
 

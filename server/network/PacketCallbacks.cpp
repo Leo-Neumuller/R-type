@@ -20,6 +20,10 @@ namespace server {
             std::cout << "Client already connected" << std::endl;
             return;
         }
+        if (_clients.size() == 5) {
+            std::cout << "Server full" << std::endl;
+            return;
+        }
         std::cout << "New Client id {" << fromId << "}" << std::endl;
         _clients.at(fromId).setConnected(true);
 
@@ -29,29 +33,23 @@ namespace server {
                 continue;
             if (_clients.at(i).isConnected()) {
                 std::cout << "Send to client {" << i << "}" << std::endl;
-                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(fromId, EPacketServer::NOTIFY_NEW_CLIENT, i, components::Position{0, (float)fromId * 100});
-                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(i, EPacketServer::NOTIFY_NEW_CLIENT, fromId, components::Position{0, (float)fromId * 100});
+                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(fromId, EPacketServer::NOTIFY_NEW_CLIENT, i, components::Position{0, 0});
+                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(i, EPacketServer::NOTIFY_NEW_CLIENT, fromId, components::Position{0, 0});
             }
         }
         server->registerNewPlayer(fromId, components::Position{0, (float)fromId * 100});
         server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position>>(fromId, EPacketServer::CLIENT_BASE_INFO, fromId, components::Position{0, (float)fromId * 100});
 
-        server->getTimedEvents().addReocurringEvent([fromId, server]() {
-            auto &ids = server->getEcs().getComponent<components::Id>();
+        auto &ids = server->getEcs().getComponent<components::Id>();
 
             for (auto &entity : server->getEcs().getEntities()) {
                 if (ids.has_index(entity) && ids[entity] != fromId) {
                     server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
-                            fromId, EPacketServer::SEND_POS_VEL, ids[entity].value(), server->getEcs().getComponent<components::Position>()[entity].value(), server->getEcs().getComponent<components::Velocity>()[entity].value());
+                            fromId, EPacketServer::FORCE_SET_POS_VEL, ids[entity].value(), server->getEcs().getComponent<components::Position>()[entity].value(), server->getEcs().getComponent<components::Velocity>()[entity].value());
+                    server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
+                            ids[entity].value(), EPacketServer::FORCE_SET_POS_VEL, fromId, server->getEcs().getComponent<components::Position>()[fromId].value(), server->getEcs().getComponent<components::Velocity>()[fromId].value());
                 }
             }
-        }, 0.1);
-
-//        server->getTimedEvents().addReocurringEvent([fromId, server]() {
-//            server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(fromId, EPacketServer::FORCE_SET_POS_VEL, fromId, components::Position{0, (float)fromId * 100}, components::Velocity{100, 0});
-//            server->setPlayerPos(fromId, components::Position{0, (float)fromId * 100});
-//            server->setPlayerVel(fromId, components::Velocity{100, 0});
-//        }, 1);
     }
 
     void PacketCallbacks::debugCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,
@@ -64,8 +62,27 @@ namespace server {
     PacketCallbacks::sendPosVelCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,
                                         components::Position pos, components::Velocity vel)
     {
-        server->setPlayerPos(fromId, pos);
+        auto &ids = server->getEcs().getComponent<components::Id>();
+        auto &poss = server->getEcs().getComponent<components::Position>();
+        auto &vels = server->getEcs().getComponent<components::Velocity>();
+
         server->setPlayerVel(fromId, vel);
+
+        for (auto &entity : server->getEcs().getEntities()) {
+            if (ids.has_index(entity) && ids[entity] != fromId) {
+                server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
+                        ids[entity].value(), EPacketServer::SEND_POS_VEL, fromId, server->getEcs().getComponent<components::Position>()[fromId].value(), server->getEcs().getComponent<components::Velocity>()[fromId].value());
+            }
+        }
+        for (auto &entity : server->getEcs().getEntities()) {
+            if (ids.has_index(entity) && poss.has_index(entity) && vels.has_index(entity) && ids[entity] == fromId) {
+                if (poss[entity].value().x - pos.x > 20 || poss[entity].value().y - pos.y > 20 || poss[entity].value().x - pos.x < -20 || poss[entity].value().y - pos.y < -20) {
+                    server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
+                            fromId, EPacketServer::FORCE_SET_POS_VEL, ids[entity].value(), server->getEcs().getComponent<components::Position>()[entity].value(), server->getEcs().getComponent<components::Velocity>()[entity].value());
+                }
+
+            }
+        }
     }
 
 } // Server

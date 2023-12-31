@@ -55,6 +55,7 @@ namespace client {
         private:
             void setup(float &deltatime);
             void networkHandle();
+            void sendPosVelPacket();
 
             std::map<int, network::NetworkClient> _server_list;
             Network _network;

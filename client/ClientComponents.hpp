@@ -11,6 +11,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <queue>
+#include "network/NetworkHandler.hpp"
 
 namespace components {
 
@@ -37,6 +38,11 @@ namespace components {
         ANIMATION,
         PARTICLE,
         UNKNOWN
+    };
+    typedef network::NetworkHandler<EPacketServer> *NetworkHandler;
+    struct LastVelocity {
+        float vx;
+        float vy;
     };
 
 } // ecs
