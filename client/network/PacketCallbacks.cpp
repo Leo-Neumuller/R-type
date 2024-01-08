@@ -40,7 +40,6 @@ namespace client {
         std::cout << "testtttttt" << std::endl;
         client->registerNewPlayer(id, pos);
         client->setCurrentPlayer(id);
-
     }
 
     void PacketCallbacks::forceSetPosCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,

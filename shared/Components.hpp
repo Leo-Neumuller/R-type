@@ -11,38 +11,49 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+namespace components
+{
 
-namespace components {
-
-    struct Position {
+    struct Position
+    {
         float x;
         float y;
     };
 
-    struct Velocity {
+    struct Velocity
+    {
         float vx;
         float vy;
     };
 
-    struct Size {
+    struct Size
+    {
         float width;
         float height;
     };
 
-    struct Anim {
+    struct Anim
+    {
         int nbFrame;
         int actualFrame;
         float animationInterval;
         float animationTimer;
         std::map<int, sf::IntRect> spriteFrames;
     };
-    struct MissileStruct {
+    struct MissileStruct
+    {
         float lifeTimer;
         bool active;
+    };
+
+    struct Enemy
+    {
+        int life;
+        int attack;
     };
 
     typedef int Id;
 
 } // ecs
 
-#endif //R_TYPE_SERVER_COMPONENTS_HPP
+#endif // R_TYPE_SERVER_COMPONENTS_HPP

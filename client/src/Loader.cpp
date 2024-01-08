@@ -6,15 +6,15 @@
 */
 
 #include "Loader.hpp"
-
+#include <filesystem>
 
 Loader::Loader()
 {
     try {
-        loadTextures("../client/assets/loadtextures.conf");
+        loadTextures("./client/assets/loadtextures.conf");
         std::cout << "Textures loaded." << std::endl;
 
-        loadFonts("../client/assets/loadfonts.conf");
+        loadFonts("./client/assets/loadfonts.conf");
         std::cout << "Fonts loaded." << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Erreur : " << e.what() << std::endl;

@@ -9,6 +9,7 @@
 #define R_TYPE_CLIENT_CLIENTSYSTEMS_HPP
 
 #include <iostream>
+#include "Client.hpp"
 #include "Registry.hpp"
 #include "Components.hpp"
 #include "SparseArray.hpp"
@@ -25,10 +26,8 @@ namespace ecs {
             ClientSystems() = delete;
             ~ClientSystems() = delete;
 
+            static void spawnEnnemy(Registry &ecs, float x, float y);
             static void playerMissile(Registry &ecs, int index, float x, float y);
-
-
-
             static void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw,
                                    SparseArray<components::Size> &size);
             static void eventPollingSystem(Registry &ecs, SparseArray<components::Event> &event, SparseArray<components::Window> &window,
