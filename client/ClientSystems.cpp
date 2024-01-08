@@ -141,15 +141,19 @@ namespace ecs
                         switch (singleEvent.key.code)
                         {
                         case sf::Keyboard::Q:
+                        case sf::Keyboard::Left:
                             vel[i]->vx = -100;
                             break;
                         case sf::Keyboard::D:
+                        case sf::Keyboard::Right:
                             vel[i]->vx = 100;
                             break;
                         case sf::Keyboard::Z:
+                        case sf::Keyboard::Up:
                             vel[i]->vy = -100;
                             break;
                         case sf::Keyboard::S:
+                        case sf::Keyboard::Down:
                             vel[i]->vy = 100;
                             break;
                         case sf::Keyboard::Space:
@@ -168,15 +172,19 @@ namespace ecs
                         switch (singleEvent.key.code)
                         {
                         case sf::Keyboard::Q:
+                        case sf::Keyboard::Left:
                             vel[i]->vx = 0;
                             break;
                         case sf::Keyboard::D:
+                        case sf::Keyboard::Right:
                             vel[i]->vx = 0;
                             break;
                         case sf::Keyboard::Z:
+                        case sf::Keyboard::Up:
                             vel[i]->vy = 0;
                             break;
                         case sf::Keyboard::S:
+                        case sf::Keyboard::Down:
                             vel[i]->vy = 0;
                             break;
                         default:
