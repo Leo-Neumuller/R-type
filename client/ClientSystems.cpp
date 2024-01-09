@@ -10,7 +10,7 @@
 namespace ecs
 {
     void ClientSystems::drawSystem(Registry &ecs, float deltatime, SparseArray<components::Position> &pos,
-                                   SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size, SparseArray<components::Enemy> &enemy)
+                                   SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size, SparseArray<components::Enemy> &enemy, SparseArray<components::Velocity> &vel)
     {
         auto &window_comps = ecs.getComponent<components::Window>();
         components::Window window = nullptr;
@@ -52,6 +52,13 @@ namespace ecs
         {
             if (enemy.has_index(i))
             {
+                pos[i]->y = std::max(0.0f, std::min(545.0f, pos[i]->y));
+
+                float moveSpeed = 150; // Adjust the speed as needed
+                if (rand() % 500 == 0)
+                {
+                    vel[i]->vy = (vel[i]->vy > 0) ? -moveSpeed : moveSpeed;
+                }
                 enemy[i]->missileTimer += deltatime;
                 if (enemy[i]->missileTimer >= 1.0f)
                 {

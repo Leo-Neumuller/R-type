@@ -109,7 +109,7 @@ namespace client
         _ecs.registerComponent<components::LastVelocity>();
         _ecs.registerComponent<components::Enemy>();
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
-        _ecs.addSystem<components::Position, components::Drawable, components::Size, components::Enemy>(ecs::ClientSystems::drawSystem, deltatime);
+        _ecs.addSystem<components::Position, components::Drawable, components::Size, components::Enemy, components::Velocity>(ecs::ClientSystems::drawSystem, deltatime);
         _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
         _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType, components::Position>(ecs::ClientSystems::playerMoveEvent);

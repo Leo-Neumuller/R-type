@@ -7,14 +7,16 @@
 
 #include "Systems.hpp"
 
-namespace ecs {
+namespace ecs
+{
 
-    void
-    Systems::moveSystem(Registry &r, float &deltaTime, SparseArray<components::Position> &pos,
-                        SparseArray<components::Velocity> &vel)
+    void Systems::moveSystem(Registry &r, float &deltaTime, SparseArray<components::Position> &pos,
+                            SparseArray<components::Velocity> &vel)
     {
-        for (int i = 0; i < pos.size() && i < vel.size(); i++) {
-            if (pos.has_index(i) && vel.has_index(i)) {
+        for (int i = 0; i < pos.size() && i < vel.size(); i++)
+        {
+            if (pos.has_index(i) && vel.has_index(i))
+            {
                 pos[i]->x += vel[i]->vx * deltaTime;
                 pos[i]->y += vel[i]->vy * deltaTime;
             }
@@ -23,10 +25,13 @@ namespace ecs {
 
     void Systems::manageMissiles(Registry &ecs, float deltatime, SparseArray<components::MissileStruct> &Missiles)
     {
-        for (int i = 0; i < Missiles.size(); i++) {
-            if (Missiles.has_index(i)) {
+        for (int i = 0; i < Missiles.size(); i++)
+        {
+            if (Missiles.has_index(i))
+            {
                 Missiles[i]->lifeTimer += deltatime;
-                if (Missiles[i]->lifeTimer >= 7.0f) {
+                if (Missiles[i]->lifeTimer >= 7.0f)
+                {
                     ecs.killEntity(i);
                 }
             }
