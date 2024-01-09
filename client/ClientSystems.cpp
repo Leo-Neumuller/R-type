@@ -64,7 +64,6 @@ namespace ecs
 
     void ClientSystems::spawnEnemyMissile(Registry &ecs, int enemyIndex, float x, float y)
     {
-        // Similar to playerMissile, but adjust as needed for enemy missiles
         auto loaderTmp = ecs.getComponent<Loader *>();
         Loader *loader;
 
@@ -81,19 +80,19 @@ namespace ecs
 
         auto missile(ecs.spawnEntity());
 
-        ecs.addComponent(missile, components::Position{x - 40, y}); // Adjust position as needed
-        ecs.addComponent(missile, components::Velocity{-200, 0});   // Adjust velocity as needed
+        ecs.addComponent(missile, components::Position{x - 40, y});
+        ecs.addComponent(missile, components::Velocity{-200, 0});
 
         std::map<int, sf::IntRect> spriteRects;
-        for (int i = 0; i < 6; ++i)
-            spriteRects[i] = sf::IntRect(i * 30, 0, 30, 30);
+        for (int i = 0; i < 3; ++i)
+            spriteRects[i] = sf::IntRect(i * 35, 0, 35, 35);
         ecs.addComponent(missile, components::MissileStruct{0.0f, true});
-        sf::Sprite tmp(loader->getTexture("missile"));
+        sf::Sprite tmp(loader->getTexture("enemymissile"));
         tmp.setTextureRect(spriteRects[0]);
 
-        ecs.addComponent(missile, components::Anim{6, 0, 0.1f, 0.0f, spriteRects});
+        ecs.addComponent(missile, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
         ecs.addComponent(missile, components::Drawable(tmp));
-        ecs.addComponent(missile, components::Size{30, 30});
+        ecs.addComponent(missile, components::Size{55, 55});
         ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET}); // Adjust entity type as needed
     }
 
