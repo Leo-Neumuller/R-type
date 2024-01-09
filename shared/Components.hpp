@@ -50,6 +50,7 @@ namespace components
     {
         int life;
         int attack;
+        float missileTimer;
     };
 
     typedef int Id;

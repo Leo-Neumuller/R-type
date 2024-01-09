@@ -26,10 +26,11 @@ namespace ecs {
             ClientSystems() = delete;
             ~ClientSystems() = delete;
 
+            static void spawnEnemyMissile(Registry &ecs, int enemyIndex, float x, float y);
             static void spawnEnnemy(Registry &ecs, float x, float y);
             static void playerMissile(Registry &ecs, int index, float x, float y);
-            static void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw,
-                                   SparseArray<components::Size> &size);
+            static void drawSystem(Registry &ecs, float deltatime, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw,
+                                   SparseArray<components::Size> &size, SparseArray<components::Enemy> &enemy);
             static void eventPollingSystem(Registry &ecs, SparseArray<components::Event> &event, SparseArray<components::Window> &window,
                                            SparseArray<components::EventQueues> &event_queues);
             static void windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window, SparseArray<components::EventQueues> &event_queues);

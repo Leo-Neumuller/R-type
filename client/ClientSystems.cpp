@@ -9,9 +9,8 @@
 
 namespace ecs
 {
-
-    void ClientSystems::drawSystem(Registry &ecs, SparseArray<components::Position> &pos,
-                                   SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size)
+    void ClientSystems::drawSystem(Registry &ecs, float deltatime, SparseArray<components::Position> &pos,
+                                   SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size, SparseArray<components::Enemy> &enemy)
     {
         auto &window_comps = ecs.getComponent<components::Window>();
         components::Window window = nullptr;
@@ -49,6 +48,53 @@ namespace ecs
                 pos[i]->x = 0;
             }
         }
+        for (int i = 0; i < enemy.size(); i++)
+        {
+            if (enemy.has_index(i))
+            {
+                enemy[i]->missileTimer += deltatime;
+                if (enemy[i]->missileTimer >= 1.0f)
+                {
+                    spawnEnemyMissile(ecs, i, pos[i]->x, pos[i]->y);
+                    enemy[i]->missileTimer = 0.0f;
+                }
+            }
+        }
+    }
+
+    void ClientSystems::spawnEnemyMissile(Registry &ecs, int enemyIndex, float x, float y)
+    {
+        // Similar to playerMissile, but adjust as needed for enemy missiles
+        auto loaderTmp = ecs.getComponent<Loader *>();
+        Loader *loader;
+
+        for (int i = 0; i < loaderTmp.size(); ++i)
+        {
+            if (loaderTmp.has_index(i))
+            {
+                loader = loaderTmp[i].value();
+                break;
+            }
+        }
+        if (!loader)
+            return;
+
+        auto missile(ecs.spawnEntity());
+
+        ecs.addComponent(missile, components::Position{x - 40, y}); // Adjust position as needed
+        ecs.addComponent(missile, components::Velocity{-200, 0});   // Adjust velocity as needed
+
+        std::map<int, sf::IntRect> spriteRects;
+        for (int i = 0; i < 6; ++i)
+            spriteRects[i] = sf::IntRect(i * 30, 0, 30, 30);
+        ecs.addComponent(missile, components::MissileStruct{0.0f, true});
+        sf::Sprite tmp(loader->getTexture("missile"));
+        tmp.setTextureRect(spriteRects[0]);
+
+        ecs.addComponent(missile, components::Anim{6, 0, 0.1f, 0.0f, spriteRects});
+        ecs.addComponent(missile, components::Drawable(tmp));
+        ecs.addComponent(missile, components::Size{30, 30});
+        ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET}); // Adjust entity type as needed
     }
 
     void ClientSystems::eventPollingSystem(Registry &ecs, SparseArray<components::Event> &event,
@@ -214,6 +260,7 @@ namespace ecs
         auto enemy(ecs.spawnEntity());
         ecs.addComponent(enemy, components::Position{x, y});
         ecs.addComponent(enemy, components::Velocity{0, 0});
+        ecs.addComponent(enemy, components::Enemy{10, 2, 0.0f});
         std::map<int, sf::IntRect> spriteRects;
         for (int i = 0; i < 3; ++i)
             spriteRects[i] = sf::IntRect(i * 55, 0, 55, 55);
