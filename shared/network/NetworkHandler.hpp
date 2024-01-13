@@ -20,18 +20,38 @@
 
 namespace network{
 
+    /*
+     * NetworkHandler
+     * Class to handle the network
+     */
     template<typename FromType>
     class NetworkHandler {
         public:
+            /*
+             * Constructor
+             * @param _clients: the clients
+             * @param packets_registry: the packets registry
+             */
             NetworkHandler(std::map<int, NetworkClient> &_clients, PacketsRegistry &packets_registry) : _id_generator(), _clients(_clients), _network_mutex(), _packet_mutex(), _packet_stack(),
                                                                                                                         _packet_condition_variable(), _packets_registry(packets_registry), _send_packet_count(0)
             {
             }
 
+            /*
+             * Destructor
+             */
             ~NetworkHandler()
             {
             }
 
+            /*
+             * handleReceive
+             * Handle the receive
+             * @param data: the data
+             * @param bytes_transferred: the bytes transferred
+             * @param endpoint: the endpoint
+             * @param socket: the socket
+             */
             void handleReceive(std::array<char, 1024> &data, std::size_t &bytes_transferred,
                                                asio::ip::udp::endpoint &endpoint, asio::ip::udp::socket &socket)
             {
@@ -52,6 +72,10 @@ namespace network{
                 }
             }
 
+            /*
+             * threatPacket
+             * Threat the packet
+             */
             void threatPacket()
             {
                 std::lock_guard<std::mutex> lock(_packet_mutex);
@@ -104,12 +128,24 @@ namespace network{
                 }
             }
 
+            /*
+             * isPacketQueueEmpty
+             * Check if the packet queue is empty
+             * @return true if the packet queue is empty, false otherwise
+             */
             bool isPacketQueueEmpty()
             {
                 std::unique_lock<std::mutex> lock(_network_mutex);
                 return _packet_stack.empty();
             }
 
+            /*
+             * serializeSendPacket
+             * Serialize and send a packet
+             * @param client_id: the client id
+             * @param packet_id: the packet id
+             * @param args: the arguments
+             */
             template<typename Type, typename... Args, typename TypePacket>
             void serializeSendPacket(int client_id, TypePacket packet_id, Args... args) {
                 auto cast = dynamic_cast<Type *>(*_packets_registry.getPacket(packet_id));
@@ -126,6 +162,13 @@ namespace network{
                 _clients.at(client_id).send(*data);
             }
 
+            /*
+             * serializePacket
+             * Serialize a packet
+             * @param packet_id: the packet id
+             * @param args: the arguments
+             * @return the serialized packet
+             */
             template<typename Type, typename... Args, typename TypePacket>
             std::shared_ptr<std::vector<char>> serializePacket(TypePacket packet_id, Args... args) {
                 auto cast = dynamic_cast<Type *>(*_packets_registry.getPacket(packet_id));
@@ -141,6 +184,10 @@ namespace network{
                 return data;
             }
 
+            /*
+             * runPackets
+             * Run the packets
+             */
             void runPackets()
             {
                 for (auto &client : _clients) {
@@ -157,6 +204,14 @@ namespace network{
         protected:
 
         private:
+            /*
+             * _threadDataPacket
+             * Thread the data packet
+             * @param size: the size
+             * @param packet_id: the packet id
+             * @param client_id: the client id
+             * @param packet_count: the packet count
+             */
             void _threadDataPacket(int size, short packet_id, int client_id, int packet_count)
             {
                 if (size < 0 || packet_id < 0 || packet_count < 0) {
@@ -179,6 +234,10 @@ namespace network{
                 _clients.at(client_id).getPackets().emplace(packet_count, packet);
             }
 
+            /*
+             * handler
+             * fake dummy handler
+             */
             void handler(std::any data...)
             {
 

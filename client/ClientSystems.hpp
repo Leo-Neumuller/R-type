@@ -20,6 +20,10 @@
 
 namespace ecs {
 
+    /*
+     * ClientSystems
+     * Class of the client systems
+     */
     class ClientSystems {
         public:
             ClientSystems() = delete;

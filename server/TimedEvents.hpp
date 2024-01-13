@@ -14,6 +14,10 @@
 
 namespace server {
 
+    /*
+     * TimedEvents
+     * Class of the timed events
+     */
     class TimedEvents {
         public:
             TimedEvents();

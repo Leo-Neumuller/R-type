@@ -10,7 +10,10 @@
 
 #include <iostream>
 
-
+/*
+ * Entity
+ * Class of the entity
+ */
 class Entity {
     public:
         explicit Entity(size_t value);

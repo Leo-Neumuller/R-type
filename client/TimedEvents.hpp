@@ -14,6 +14,10 @@
 
 namespace client {
 
+    /*
+     * TimedEvents
+     * Class of the timed events
+     */
     class TimedEvents {
         public:
             TimedEvents();

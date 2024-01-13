@@ -14,15 +14,29 @@
 
 namespace client {
 
+    /*
+     * Client
+     * Constructor of Client
+     */
     Client::Client() : _server_list(), _network(_network_handler), _packets_registry(), _network_handler(_server_list, _packets_registry),
                         _server(nullptr), _connected(false), _ecs(), _renderer(_ecs), _current_player_id(0), _timed_events()
     {
     }
 
+    /*
+     * ~Client
+     * Destructor of Client
+     */
     Client::~Client()
     {
     }
 
+    /*
+     * connectToServer
+     * Connect to the server
+     * @param address
+     * @param port
+     */
     void Client::connectToServer(std::string address, int port)
     {
         registerPacketClient(EPacketClient::CLIENT_HELLO);
@@ -30,6 +44,10 @@ namespace client {
         _network.run(std::move(address), port, *first_data);
     }
 
+    /*
+     * runClient
+     * Run the client
+     */
     void Client::runClient()
     {
         float deltatime = 0;
@@ -45,6 +63,10 @@ namespace client {
         _network.stop();
     }
 
+    /*
+     * networkHandle
+     * Handle the network
+     */
     void Client::networkHandle()
     {
             while (!_network_handler.isPacketQueueEmpty()) {
@@ -62,16 +84,31 @@ namespace client {
             }
     }
 
+    /*
+     * getPacketsRegistry
+     * Get the packets registry
+     * @return
+     */
     network::PacketsRegistry &Client::getPacketsRegistry()
     {
         return _packets_registry;
     }
 
+    /*
+     * getNetworkHandler
+     * Get the network handler
+     * @return
+     */
     network::NetworkHandler<EPacketServer> &Client::getNetworkHandler()
     {
         return _network_handler;
     }
 
+    /*
+     * setup
+     * Setup the client (register components, systems and network packets)
+     * @param deltatime
+     */
     void Client::setup(float &deltatime)
     {
         registerPacketClient<std::string>(EPacketClient::DEBUG_PACKET_CLIENT);
@@ -114,16 +151,32 @@ namespace client {
         _ecs.addComponent(entity, &_texturesFonts);
     }
 
+    /*
+     * isConnected
+     * Check if the client is connected
+     * @return bool
+     */
     bool Client::isConnected() const
     {
         return _connected;
     }
 
+    /*
+     * setConnected
+     * Set the connected status
+     * @param connected
+     */
     void Client::setConnected(bool connected)
     {
         _connected = connected;
     }
 
+    /*
+     * registerNewPlayer
+     * Register a new player
+     * @param id
+     * @param pos
+     */
     void Client::registerNewPlayer(int id, components::Position pos)
     {
         auto entity = _ecs.spawnEntity();
@@ -147,6 +200,10 @@ namespace client {
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
     }
 
+    /*
+     * setupBackground
+     * Setup the background
+     */
     void Client::setupBackground()
     {
         auto entity = _ecs.spawnEntity();
@@ -158,11 +215,21 @@ namespace client {
         _ecs.addComponent(entity, components::EntityType{components::EntityType::BACKGROUND});
     }
 
+    /*
+     * getEcs
+     * Get the ECS
+     * @return
+     */
     Registry &Client::getEcs()
     {
         return _ecs;
     }
 
+    /*
+     * setCurrentPlayer
+     * Set the current player
+     * @param id
+     */
     void Client::setCurrentPlayer(int id)
     {
         auto &ids = getEcs().getComponent<components::Id>();

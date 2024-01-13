@@ -14,6 +14,10 @@
 
 namespace network {
 
+    /*
+     * IdGenerator
+     * Class of the id generator
+     */
     class IdGenerator {
         public:
             IdGenerator();

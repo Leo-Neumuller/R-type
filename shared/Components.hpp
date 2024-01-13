@@ -14,21 +14,37 @@
 
 namespace components {
 
+    /*
+     * Position
+     * Structure of the position
+     */
     struct Position {
         float x;
         float y;
     };
 
+    /*
+     * Velocity
+     * Structure of the velocity
+     */
     struct Velocity {
         float vx;
         float vy;
     };
 
+    /*
+     * Size
+     * Structure of the size
+     */
     struct Size {
         float width;
         float height;
     };
 
+    /*
+     * Anim
+     * Structure of the animation
+     */
     struct Anim {
         int nbFrame;
         int actualFrame;
@@ -36,6 +52,11 @@ namespace components {
         float animationTimer;
         std::map<int, sf::IntRect> spriteFrames;
     };
+
+    /*
+     * MissileStruct
+     * Structure of the missile
+     */
     struct MissileStruct {
         float lifeTimer;
         bool active;

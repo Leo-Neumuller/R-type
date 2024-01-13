@@ -19,6 +19,10 @@
 
 namespace server {
 
+    /*
+     * Server
+     * Class of the server
+     */
     class Server {
         public:
             Server();

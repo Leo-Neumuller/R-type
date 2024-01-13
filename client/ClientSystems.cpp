@@ -10,6 +10,14 @@
 namespace ecs {
 
 
+    /*
+     * drawSystem
+     * System for drawing entities
+     * @param ecs
+     * @param pos
+     * @param draw
+     * @param size
+     */
     void ClientSystems::drawSystem(Registry &ecs, SparseArray<components::Position> &pos,
                                    SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size)
     {
@@ -37,6 +45,14 @@ namespace ecs {
         }
     }
 
+    /*
+     * eventPollingSystem
+     * System for polling events
+     * @param ecs
+     * @param event
+     * @param window
+     * @param event_queues
+     */
     void ClientSystems::eventPollingSystem(Registry &ecs, SparseArray<components::Event> &event,
                                            SparseArray<components::Window> &window,
                                            SparseArray<components::EventQueues> &event_queues)
@@ -68,6 +84,13 @@ namespace ecs {
         }
     }
 
+    /*
+     * windowEventsSystem
+     * System for window events
+     * @param ecs
+     * @param window
+     * @param event_queues
+     */
     void ClientSystems::windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window,
                                            SparseArray<components::EventQueues> &event_queues)
     {
@@ -83,6 +106,15 @@ namespace ecs {
         }
     }
 
+    /*
+     * playerMoveEvent
+     * System for player move events
+     * @param ecs
+     * @param event_queues
+     * @param vel
+     * @param type
+     * @param pos
+     */
     void ClientSystems::playerMoveEvent(Registry &ecs, SparseArray<components::EventQueues> &event_queues,
                                         SparseArray<components::Velocity> &vel,
                                         SparseArray<components::EntityType> &type,
@@ -156,7 +188,14 @@ namespace ecs {
     }
 
 
-
+    /*
+     * playerMissile
+     * System for player missile
+     * @param ecs
+     * @param index
+     * @param x
+     * @param y
+     */
     void ClientSystems::playerMissile(Registry &ecs, int index, float x, float y)
     {
         auto loaderTmp = ecs.getComponent<Loader *>();
@@ -191,6 +230,17 @@ namespace ecs {
 
     }
 
+    /*
+     * playerMoveNetwork
+     * System for player move network
+     * @param ecs
+     * @param deltatime
+     * @param vel
+     * @param pos
+     * @param type
+     * @param network_handler
+     * @param last_vel
+     */
     void ClientSystems::playerMoveNetwork(Registry &ecs, float &deltatime, SparseArray<components::Velocity> &vel,
                                           SparseArray<components::Position> &pos,
                                           SparseArray<components::EntityType> &type,
@@ -210,6 +260,14 @@ namespace ecs {
         }
     }
 
+    /*
+     * spriteAnimation
+     * System for sprite animation
+     * @param ecs
+     * @param deltatime
+     * @param draw
+     * @param Anim
+     */
     void ClientSystems::spriteAnimation(Registry &ecs, float deltatime, SparseArray<components::Drawable> &draw, SparseArray<components::Anim> &Anim)
     {
         for (int i = 0; i < draw.size(); i++) {

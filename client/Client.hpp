@@ -26,6 +26,10 @@
 
 namespace client {
 
+    /*
+     * Client
+     * Class of the client
+     */
     class Client {
         public:
             Client();
@@ -36,11 +40,25 @@ namespace client {
             network::PacketsRegistry &getPacketsRegistry();
             network::NetworkHandler<EPacketServer> &getNetworkHandler();
 
+            /*
+             * registerPacketServer
+             * Register a packet from the server
+             * @tparam Args
+             * @param func
+             * @param packet
+             */
             template<typename... Args, typename Func>
             void registerPacketServer(Func func, EPacketServer packet) {
                 _packets_registry.registerPacketServer<Args...>([this, func](int id, Args... args) {func(this, *_server, id, args...);}, packet);
             }
 
+            /*
+             * registerPacketClient
+             * Register a packet from the client
+             * @tparam Args
+             * @param func
+             * @param packet
+             */
             template<typename... Args>
             void registerPacketClient(EPacketClient packet) {
                 _packets_registry.registerPacketClient<Args...>([](int id, Args... args) {}, packet);

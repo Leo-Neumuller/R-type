@@ -9,6 +9,14 @@
 
 namespace client {
 
+    /*
+     * helloCallback
+     * Callback for the hello packet
+     * @param client
+     * @param server
+     * @param fromId
+     * @param data
+     */
     void PacketCallbacks::helloCallback(Client *client, network::NetworkClient &server, int &fromId, bool &data)
     {
         if (data) {
@@ -22,11 +30,28 @@ namespace client {
         client->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, std::string>>(fromId, EPacketClient::DEBUG_PACKET_CLIENT, "Hello from client");
     }
 
+    /*
+     * debugCallback
+     * Callback for the debug packet
+     * @param client
+     * @param server
+     * @param fromId
+     * @param data
+     */
     void PacketCallbacks::debugCallback(Client *client, network::NetworkClient &server, int &fromId, std::string &data)
     {
         std::cout << "Debug from server: " << data << std::endl;
     }
 
+    /*
+     * newClientCallback
+     * Callback for the new client packet
+     * @param client
+     * @param server
+     * @param fromId
+     * @param id
+     * @param pos
+     */
     void PacketCallbacks::newClientCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                             components::Position &pos)
     {
@@ -34,6 +59,15 @@ namespace client {
         client->registerNewPlayer(id, pos);
     }
 
+    /*
+     * clientBaseInfoCallback
+     * Callback for the client base info packet
+     * @param client
+     * @param server
+     * @param fromId
+     * @param id
+     * @param pos
+     */
     void PacketCallbacks::clientBaseInfoCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                                  components::Position &pos)
     {
@@ -43,6 +77,16 @@ namespace client {
 
     }
 
+    /*
+     * forceSetPosCallback
+     * Callback for the force set pos packet
+     * @param client
+     * @param server
+     * @param fromId
+     * @param id
+     * @param pos
+     * @param vel
+     */
     void PacketCallbacks::forceSetPosCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                               components::Position &pos, components::Velocity &vel)
     {
@@ -57,6 +101,16 @@ namespace client {
         }
     }
 
+    /*
+     * sendPosVelCallback
+     * Callback for the send pos vel packet
+     * @param client
+     * @param server
+     * @param fromId
+     * @param id
+     * @param pos
+     * @param vel
+     */
     void PacketCallbacks::sendPosVelCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                              components::Position &pos, components::Velocity &vel)
     {

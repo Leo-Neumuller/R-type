@@ -19,6 +19,10 @@
 
 namespace client {
 
+    /*
+     * Render
+     * Class of the render
+     */
     class Render {
         public:
             Render(Registry &ecs);

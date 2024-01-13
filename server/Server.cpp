@@ -12,20 +12,37 @@
 
 namespace server {
 
+    /*
+     * Server
+     * Constructor of Server
+     */
     Server::Server() : _clients(), _network(_network_handler), _packets_registry(), _network_handler(_clients, _packets_registry),
                        _ecs(), _network_thread(), _running(true), _timed_events()
     {
     }
 
+    /*
+     * ~Server
+     * Destructor of Server
+     */
     Server::~Server()
     {
     }
 
+    /*
+     * runNetwork
+     * Run the network
+     * @param port: the port
+     */
     void Server::runNetwork(int port)
     {
         _network.run(port);
     }
 
+    /*
+     * runServer
+     * Run the server
+     */
     void Server::runServer()
     {
         auto clock = std::chrono::high_resolution_clock::now();
@@ -45,6 +62,10 @@ namespace server {
 
     }
 
+    /*
+     * networkHandler
+     * Handle the network
+     */
     void Server::networkHandler()
     {
         while (!_network_handler.isPacketQueueEmpty()) {
@@ -61,6 +82,11 @@ namespace server {
         }
     }
 
+    /*
+     * setup
+     * Setup the server (register packets, components, systems)
+     * @param deltatime: the deltatime
+     */
     void Server::setup(float &deltatime)
     {
         registerPacketServer<bool>(EPacketServer::SERVER_HELLO);
@@ -81,16 +107,32 @@ namespace server {
 
     }
 
+    /*
+     * getPacketsRegistry
+     * Get the packets registry
+     * @return: the packets registry
+     */
     network::PacketsRegistry &Server::getPacketsRegistry()
     {
         return _packets_registry;
     }
 
+    /*
+     * getNetworkHandler
+     * Get the network handler
+     * @return: the network handler
+     */
     network::NetworkHandler<EPacketClient> &Server::getNetworkHandler()
     {
         return _network_handler;
     }
 
+    /*
+     * registerNewPlayer
+     * Register a new player
+     * @param id: the id of the player
+     * @param pos: the position of the player
+     */
     void Server::registerNewPlayer(int id, components::Position pos)
     {
         auto entity = _ecs.spawnEntity();
@@ -100,16 +142,32 @@ namespace server {
         _ecs.addComponent(entity, components::Id{id});
     }
 
+    /*
+     * getTimedEvents
+     * Get the timed events
+     * @return: the timed events
+     */
     TimedEvents &Server::getTimedEvents()
     {
         return _timed_events;
     }
 
+    /*
+     * getEcs
+     * Get the ecs
+     * @return: the ecs
+     */
     Registry &Server::getEcs()
     {
         return _ecs;
     }
 
+    /*
+     * setPlayerPos
+     * Set the player position
+     * @param id: the id of the player
+     * @param pos: the position of the player
+     */
     void Server::setPlayerPos(int id, components::Position pos)
     {
         auto &ids = getEcs().getComponent<components::Id>();
@@ -121,6 +179,12 @@ namespace server {
         }
     }
 
+    /*
+     * setPlayerVel
+     * Set the player velocity
+     * @param id: the id of the player
+     * @param vel: the velocity of the player
+     */
     void Server::setPlayerVel(int id, components::Velocity vel)
     {
         auto &ids = getEcs().getComponent<components::Id>();

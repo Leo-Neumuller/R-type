@@ -10,14 +10,26 @@
 
 namespace client {
 
+    /*
+     * Render
+     * Constructor of Render
+     */
     Render::Render(Registry &ecs) : _ecs(ecs), _window(), _clock()
     {
     }
 
+    /*
+     * ~Render
+     * Destructor of Render
+     */
     Render::~Render()
     {
     }
 
+    /*
+     * startRender
+     * Start the render
+     */
     void Render::startRender()
     {
         Entity render_entity(_ecs.spawnEntity());
@@ -30,6 +42,11 @@ namespace client {
         _clock.restart();
     }
 
+    /*
+     * render
+     * Render the window
+     * @return: the time elapsed since the last frame
+     */
     float Render::render()
     {
         _window.display();
@@ -38,6 +55,11 @@ namespace client {
         return _clock.restart().asSeconds();
     }
 
+    /*
+     * isOpen
+     * Check if the window is open
+     * @return: true if the window is open, false otherwise
+     */
     bool Render::isOpen()
     {
         return _window.isOpen();

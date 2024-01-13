@@ -15,6 +15,10 @@
 
 namespace client {
 
+    /*
+     * Network
+     * Class of the network
+     */
     class Network {
         public:
             Network(network::NetworkHandler<EPacketServer> &networkHandler);

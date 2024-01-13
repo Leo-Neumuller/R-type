@@ -14,6 +14,10 @@
 
 namespace client {
 
+    /*
+     * PacketCallbacks
+     * Class of the packet callbacks
+     */
     class PacketCallbacks {
         public:
             PacketCallbacks() = delete;

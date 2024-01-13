@@ -16,6 +16,11 @@
 #include <map>
 
 namespace network {
+
+    /*
+     * NetworkClient
+     * Class of the network client
+     */
     class NetworkClient {
         public:
             explicit NetworkClient(int id, asio::ip::udp::endpoint &endpoint,

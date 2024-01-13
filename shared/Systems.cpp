@@ -9,6 +9,14 @@
 
 namespace ecs {
 
+    /*
+     * moveSystem
+     * Move the entity
+     * @param r: the registry
+     * @param deltaTime: the delta time
+     * @param pos: the position
+     * @param vel: the velocity
+     */
     void
     Systems::moveSystem(Registry &r, float &deltaTime, SparseArray<components::Position> &pos,
                         SparseArray<components::Velocity> &vel)
@@ -21,6 +29,13 @@ namespace ecs {
         }
     }
 
+    /*
+     * manageMissiles
+     * Manage the missiles
+     * @param ecs: the registry
+     * @param deltatime: the delta time
+     * @param Missiles: the missiles
+     */
     void Systems::manageMissiles(Registry &ecs, float deltatime, SparseArray<components::MissileStruct> &Missiles)
     {
         for (int i = 0; i < Missiles.size(); i++) {

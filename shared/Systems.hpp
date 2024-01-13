@@ -15,6 +15,10 @@
 
 namespace ecs {
 
+    /*
+     * Systems
+     * Class of the systems
+     */
     class Systems {
         public:
             Systems() = delete;

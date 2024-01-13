@@ -9,6 +9,13 @@
 
 namespace server {
 
+    /*
+     * helloCallback
+     * Hello packet callback
+     * @param server: the server
+     * @param _clients: the clients
+     * @param fromId: the id of the client
+     */
     void PacketCallbacks::helloCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId)
     {
         server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, std::string>>(fromId, EPacketServer::DEBUG_PACKET_SERVER, "Hello from server");
@@ -52,12 +59,29 @@ namespace server {
             }
     }
 
+    /*
+     * debugCallback
+     * Debug packet callback
+     * @param server: the server
+     * @param _clients: the clients
+     * @param fromId: the id of the client
+     * @param data: the debug string
+     */
     void PacketCallbacks::debugCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,
                                         std::string data)
     {
         std::cout << "Debug from client: " << data << std::endl;
     }
 
+    /*
+     * sendPosVelCallback
+     * Send position and velocity packet callback
+     * @param server: the server
+     * @param _clients: the clients
+     * @param fromId: the id of the client
+     * @param pos: the position of the client
+     * @param vel: the velocity of the client
+     */
     void
     PacketCallbacks::sendPosVelCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId,
                                         components::Position pos, components::Velocity vel)

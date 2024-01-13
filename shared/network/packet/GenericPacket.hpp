@@ -20,20 +20,41 @@
 
 namespace network {
 
+    /*
+     * GenericPacket
+     * Class that create a packet based of its type and able to serialize and deserialize
+     */
     template<typename Func, typename... Args>
     class GenericPacket : public IPacket {
         public:
+            /*
+             * Constructor
+             * @param func: function to execute when the packet is received
+             */
             explicit GenericPacket(Func func) : _size(0), _func(func), _packet_count(-1) {
                 _nb_params = sizeof...(Args);
                 (addParamSize<Args>(), ...);
             };
+            /*
+             * Destructor
+             */
             ~GenericPacket() override = default;
 
+            /*
+             * deserialize
+             * Deserialize the packet
+             * @param data: the data to deserialize
+             */
             void deserialize(std::vector<char> &data) override {
                 unpackParams<Args...>(data);
                 data.clear();
             };
 
+            /*
+             * serialize
+             * Serialize the packet
+             * @param args: the arguments to serialize
+             */
             std::shared_ptr<std::vector<char>> serialize(Args... args)
             {
                 std::shared_ptr<std::vector<char>> data = std::make_shared<std::vector<char>>();
@@ -45,22 +66,42 @@ namespace network {
                 return data;
             }
 
+            /*
+             * getSizeRequired
+             * Get the size required for the packet
+             * @return the size required
+             */
             int getSizeRequired() override
             {
                 return _size;
             }
 
+            /*
+             * handleData
+             * Handle the data
+             * @param fromId: the id of the client
+             */
             void handleData(int fromId) override
             {
                 _fromId = fromId;
                 execFuncWithData<Args...>();
             }
 
+            /*
+             * setPacketCount
+             * Set the packet count
+             * @param packetCount: the packet count
+             */
             void setPacketCount(int packetCount) override
             {
                 _packet_count = packetCount;
             }
 
+            /*
+             * getPacketCount
+             * Get the packet count
+             * @return the packet count
+             */
             int getPacketCount() override
             {
                 return _packet_count;
@@ -70,12 +111,26 @@ namespace network {
 
         private:
 
+            /*
+             * has_iterator
+             * Check if the type has an iterator
+             */
             template <typename T, typename = void>
             struct has_iterator : std::false_type {};
 
+            /*
+             * has_iterator
+             * Check if the type has an iterator
+             */
             template <typename T>
             struct has_iterator<T, std::void_t<typename T::iterator>> : std::true_type {};
 
+            /*
+             * appendToData
+             * Append data to the packet
+             * @param arg: the argument to append
+             * @param data: the data to append to
+             */
             template<class Arg>
             typename std::enable_if<!has_iterator<Arg>::value>::type
             appendToData(Arg arg, std::vector<char> &data) {
@@ -83,6 +138,12 @@ namespace network {
                 std::memcpy(data.data() + data.size() - sizeof(Arg), &arg, sizeof(Arg));
             }
 
+            /*
+             * appendToData
+             * Append data to the packet
+             * @param arg: the argument to append
+             * @param data: the data to append to
+             */
             template<class Arg>
             typename std::enable_if<has_iterator<Arg>::value>::type
             appendToData(Arg arg, std::vector<char> &data) {
@@ -94,6 +155,12 @@ namespace network {
                 std::memcpy(data.data() + data.size() - size, arg.data(), size);
             }
 
+            /*
+             * getParam
+             * Get the parameter
+             * @tparam Arg: the type of the parameter
+             * @return the parameter
+             */
             template<class Arg>
             Arg getParam() {
                 for (auto &param : _params) {
@@ -104,6 +171,10 @@ namespace network {
                 throw std::runtime_error("Param not found");
             }
 
+            /*
+             * execFuncWithData
+             * Execute the function with the associated data
+             */
             template <typename... Arg>
             void execFuncWithData() {
                 std::function<void()> func = [this]() {
@@ -112,11 +183,22 @@ namespace network {
                 func();
             }
 
+            /*
+             * addParamSize
+             * Add the size of the parameter
+             */
             template <typename Arg>
             void addParamSize() {
                 _size += sizeof(Arg);
             }
 
+            /*
+             * unpackParam
+             * Unpack the parameter
+             * @tparam Arg: the type of the parameter
+             * @param data: the data to unpack
+             * @return the parameter
+             */
             template <typename Arg>
             typename std::enable_if<!has_iterator<Arg>::value>::type
             unpackParam(std::vector<char> &data) {
@@ -128,6 +210,13 @@ namespace network {
                 _params.insert(_params.begin(), std::make_pair(std::type_index(typeid(Arg)), param));
             };
 
+            /*
+             * unpackParam
+             * Unpack the parameter
+             * @tparam Arg: the type of the parameter
+             * @param data: the data to unpack
+             * @return the parameter
+             */
             template <typename Arg>
             typename std::enable_if<has_iterator<Arg>::value>::type
             unpackParam(std::vector<char> &data) {
@@ -145,8 +234,12 @@ namespace network {
                 _params.insert(_params.begin(), std::make_pair(std::type_index(typeid(Arg)), param));
             };
 
-
-
+            /*
+             * unpackParams
+             * Unpack the parameters
+             * @tparam Arg: the type of the parameters
+             * @param data: the data to unpack
+             */
             template <typename... Arg>
             void unpackParams(std::vector<char> &data) {
                 (unpackParam<Arg>(data), ...);
