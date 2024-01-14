@@ -48,3 +48,17 @@ cd build
 cmake ..
 cmake --build .
 ```
+
+### Run server
+
+```bash
+cd build
+./r-type_server
+```
+
+### Run client
+
+```bash
+cd build
+./r-type_client
+```
