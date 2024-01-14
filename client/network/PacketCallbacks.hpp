@@ -14,7 +14,7 @@
 
 namespace client {
 
-    /*
+    /**
      * PacketCallbacks
      * Class of the packet callbacks
      */

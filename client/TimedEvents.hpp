@@ -14,7 +14,7 @@
 
 namespace client {
 
-    /*
+    /**
      * TimedEvents
      * Class of the timed events
      */

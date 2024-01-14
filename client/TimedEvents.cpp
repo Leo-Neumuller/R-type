@@ -9,7 +9,7 @@
 
 namespace client {
 
-    /*
+    /**
      * TimedEvents
      * Constructor of TimedEvents
      */
@@ -17,7 +17,7 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * ~TimedEvents
      * Destructor of TimedEvents
      */
@@ -25,7 +25,7 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * addEvent
      * Add an event
      * @param func
@@ -36,7 +36,7 @@ namespace client {
         _events.emplace_back(func, time + _time);
     }
 
-    /*
+    /**
      * runEvents
      * Run the events
      * @param deltaTime
@@ -58,7 +58,7 @@ namespace client {
         }
     }
 
-    /*
+    /**
      * addReocurringEvent
      * Add a reocurring event
      * @param func

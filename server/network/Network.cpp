@@ -9,7 +9,7 @@
 
 namespace server {
 
-    /*
+    /**
      * Network
      * Constructor of Network
      * @param network_handler: the network handler
@@ -21,7 +21,7 @@ namespace server {
 
     }
 
-    /*
+    /**
      * ~Network
      * Destructor of Network
      */
@@ -29,7 +29,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * _begin_receive
      * Begin to receive data from the network
      */
@@ -39,7 +39,7 @@ namespace server {
         _udp_socket->async_receive_from(asio::buffer(_data, 1024), _udp_client_endpoint, std::bind(&Network::_handle_receive, this, std::placeholders::_1, std::placeholders::_2));
     }
 
-    /*
+    /**
      * _handle_receive
      * Handle the receive of data from the network
      * @param error: the error
@@ -53,7 +53,7 @@ namespace server {
         }
     }
 
-    /*
+    /**
      * run
      * Run the network
      * @param port: the port

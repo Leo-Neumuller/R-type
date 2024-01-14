@@ -19,7 +19,7 @@
 
 namespace client {
 
-    /*
+    /**
      * Render
      * Class of the render
      */

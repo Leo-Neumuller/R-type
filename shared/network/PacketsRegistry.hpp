@@ -19,26 +19,26 @@
 
 namespace network {
 
-    /*
+    /**
      * PacketsRegistry
      * Class of the packets registry
      */
     class PacketsRegistry {
         public:
 
-            /*
+            /**
              * Constructor
              */
             PacketsRegistry() : _packets_client(), _packets_server()
             {
             }
 
-            /*
+            /**
              * Destructor
              */
             ~PacketsRegistry() = default;
 
-            /*
+            /**
              * registerPacketClient
              * Register a packet that comes from the client
              * @param func: the function to call when the packet is received
@@ -49,7 +49,7 @@ namespace network {
                 _packets_client.emplace(packet, [func]() { return new GenericPacket<Func , Args...>(func); });
             }
 
-            /*
+            /**
              * registerPacketClient
              * Register a packet that comes from the client
              * @param packet: the packet to register
@@ -59,7 +59,7 @@ namespace network {
                 _packets_client.emplace(packet, [func]() { return new GenericPacket<std::function<void(int)>>(func); });
             }
 
-            /*
+            /**
              * registerPacketServer
              * Register a packet that comes from the server
              * @param func: the function to call when the packet is received
@@ -70,7 +70,7 @@ namespace network {
                 _packets_server.emplace(packet, [func]() { return new GenericPacket<Func , Args...>(func); });
             }
 
-            /*
+            /**
              * registerPacketServer
              * Register a packet that comes from the server
              * @param packet: the packet to register
@@ -80,7 +80,7 @@ namespace network {
                 _packets_server.emplace(packet, [func]() { return new GenericPacket<std::function<void(int)>>(func); });
             }
 
-            /*
+            /**
              * getPacket
              * Get a packet
              * @param packet: the packet to get
@@ -92,7 +92,7 @@ namespace network {
                 return (std::make_shared<IPacket *>(_packets_client[packet]()));
             }
 
-            /*
+            /**
              * getPacket
              * Get a packet
              * @param packet: the packet to get
@@ -104,7 +104,7 @@ namespace network {
                 return (std::make_shared<IPacket *>(_packets_server[packet]()));
             }
 
-            /*
+            /**
              * getPacketClient
              * Get a packet that comes from the client
              * @param packet: the packet to get
@@ -114,7 +114,7 @@ namespace network {
                 return (std::make_shared<IPacket *>(_packets_client[packet]()));
             }
 
-            /*
+            /**
              * getPacketServer
              * Get a packet that comes from the server
              * @param packet: the packet to get

@@ -10,7 +10,7 @@
 namespace ecs {
 
 
-    /*
+    /**
      * drawSystem
      * System for drawing entities
      * @param ecs
@@ -45,7 +45,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * eventPollingSystem
      * System for polling events
      * @param ecs
@@ -84,7 +84,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * windowEventsSystem
      * System for window events
      * @param ecs
@@ -106,7 +106,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * playerMoveEvent
      * System for player move events
      * @param ecs
@@ -188,7 +188,7 @@ namespace ecs {
     }
 
 
-    /*
+    /**
      * playerMissile
      * System for player missile
      * @param ecs
@@ -230,7 +230,7 @@ namespace ecs {
 
     }
 
-    /*
+    /**
      * playerMoveNetwork
      * System for player move network
      * @param ecs
@@ -260,7 +260,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * spriteAnimation
      * System for sprite animation
      * @param ecs

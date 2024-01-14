@@ -20,14 +20,14 @@
 
 namespace network {
 
-    /*
+    /**
      * GenericPacket
      * Class that create a packet based of its type and able to serialize and deserialize
      */
     template<typename Func, typename... Args>
     class GenericPacket : public IPacket {
         public:
-            /*
+            /**
              * Constructor
              * @param func: function to execute when the packet is received
              */
@@ -35,12 +35,12 @@ namespace network {
                 _nb_params = sizeof...(Args);
                 (addParamSize<Args>(), ...);
             };
-            /*
+            /**
              * Destructor
              */
             ~GenericPacket() override = default;
 
-            /*
+            /**
              * deserialize
              * Deserialize the packet
              * @param data: the data to deserialize
@@ -50,7 +50,7 @@ namespace network {
                 data.clear();
             };
 
-            /*
+            /**
              * serialize
              * Serialize the packet
              * @param args: the arguments to serialize
@@ -66,7 +66,7 @@ namespace network {
                 return data;
             }
 
-            /*
+            /**
              * getSizeRequired
              * Get the size required for the packet
              * @return the size required
@@ -76,7 +76,7 @@ namespace network {
                 return _size;
             }
 
-            /*
+            /**
              * handleData
              * Handle the data
              * @param fromId: the id of the client
@@ -87,7 +87,7 @@ namespace network {
                 execFuncWithData<Args...>();
             }
 
-            /*
+            /**
              * setPacketCount
              * Set the packet count
              * @param packetCount: the packet count
@@ -97,7 +97,7 @@ namespace network {
                 _packet_count = packetCount;
             }
 
-            /*
+            /**
              * getPacketCount
              * Get the packet count
              * @return the packet count
@@ -111,21 +111,21 @@ namespace network {
 
         private:
 
-            /*
+            /**
              * has_iterator
              * Check if the type has an iterator
              */
             template <typename T, typename = void>
             struct has_iterator : std::false_type {};
 
-            /*
+            /**
              * has_iterator
              * Check if the type has an iterator
              */
             template <typename T>
             struct has_iterator<T, std::void_t<typename T::iterator>> : std::true_type {};
 
-            /*
+            /**
              * appendToData
              * Append data to the packet
              * @param arg: the argument to append
@@ -138,7 +138,7 @@ namespace network {
                 std::memcpy(data.data() + data.size() - sizeof(Arg), &arg, sizeof(Arg));
             }
 
-            /*
+            /**
              * appendToData
              * Append data to the packet
              * @param arg: the argument to append
@@ -155,7 +155,7 @@ namespace network {
                 std::memcpy(data.data() + data.size() - size, arg.data(), size);
             }
 
-            /*
+            /**
              * getParam
              * Get the parameter
              * @tparam Arg: the type of the parameter
@@ -171,7 +171,7 @@ namespace network {
                 throw std::runtime_error("Param not found");
             }
 
-            /*
+            /**
              * execFuncWithData
              * Execute the function with the associated data
              */
@@ -183,7 +183,7 @@ namespace network {
                 func();
             }
 
-            /*
+            /**
              * addParamSize
              * Add the size of the parameter
              */
@@ -192,7 +192,7 @@ namespace network {
                 _size += sizeof(Arg);
             }
 
-            /*
+            /**
              * unpackParam
              * Unpack the parameter
              * @tparam Arg: the type of the parameter
@@ -210,7 +210,7 @@ namespace network {
                 _params.insert(_params.begin(), std::make_pair(std::type_index(typeid(Arg)), param));
             };
 
-            /*
+            /**
              * unpackParam
              * Unpack the parameter
              * @tparam Arg: the type of the parameter
@@ -234,7 +234,7 @@ namespace network {
                 _params.insert(_params.begin(), std::make_pair(std::type_index(typeid(Arg)), param));
             };
 
-            /*
+            /**
              * unpackParams
              * Unpack the parameters
              * @tparam Arg: the type of the parameters

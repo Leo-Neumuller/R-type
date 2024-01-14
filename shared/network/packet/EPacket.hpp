@@ -8,7 +8,7 @@
 #ifndef R_TYPE_SERVER_EPACKET_HPP
 #define R_TYPE_SERVER_EPACKET_HPP
 
-/*
+/**
  * EPacketResponse
  * Enum of the packet response
  */
@@ -18,7 +18,7 @@ enum EPacketResponse {
     UNKNOWN
 };
 
-/*
+/**
  * EPacketType
  * Enum of the packet type
  */
@@ -29,7 +29,7 @@ enum EPacketClient {
     CLIENT_DISCONNECT
 };
 
-/*
+/**
  * EPacketServer
  * Enum of the packet type
  */

@@ -14,7 +14,7 @@
 
 namespace client {
 
-    /*
+    /**
      * Client
      * Constructor of Client
      */
@@ -23,7 +23,7 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * ~Client
      * Destructor of Client
      */
@@ -31,7 +31,7 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * connectToServer
      * Connect to the server
      * @param address
@@ -44,7 +44,7 @@ namespace client {
         _network.run(std::move(address), port, *first_data);
     }
 
-    /*
+    /**
      * runClient
      * Run the client
      */
@@ -63,7 +63,7 @@ namespace client {
         _network.stop();
     }
 
-    /*
+    /**
      * networkHandle
      * Handle the network
      */
@@ -84,7 +84,7 @@ namespace client {
             }
     }
 
-    /*
+    /**
      * getPacketsRegistry
      * Get the packets registry
      * @return
@@ -94,7 +94,7 @@ namespace client {
         return _packets_registry;
     }
 
-    /*
+    /**
      * getNetworkHandler
      * Get the network handler
      * @return
@@ -104,7 +104,7 @@ namespace client {
         return _network_handler;
     }
 
-    /*
+    /**
      * setup
      * Setup the client (register components, systems and network packets)
      * @param deltatime
@@ -151,7 +151,7 @@ namespace client {
         _ecs.addComponent(entity, &_texturesFonts);
     }
 
-    /*
+    /**
      * isConnected
      * Check if the client is connected
      * @return bool
@@ -161,7 +161,7 @@ namespace client {
         return _connected;
     }
 
-    /*
+    /**
      * setConnected
      * Set the connected status
      * @param connected
@@ -171,7 +171,7 @@ namespace client {
         _connected = connected;
     }
 
-    /*
+    /**
      * registerNewPlayer
      * Register a new player
      * @param id
@@ -200,7 +200,7 @@ namespace client {
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
     }
 
-    /*
+    /**
      * setupBackground
      * Setup the background
      */
@@ -215,7 +215,7 @@ namespace client {
         _ecs.addComponent(entity, components::EntityType{components::EntityType::BACKGROUND});
     }
 
-    /*
+    /**
      * getEcs
      * Get the ECS
      * @return
@@ -225,7 +225,7 @@ namespace client {
         return _ecs;
     }
 
-    /*
+    /**
      * setCurrentPlayer
      * Set the current player
      * @param id

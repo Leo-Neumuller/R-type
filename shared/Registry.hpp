@@ -16,7 +16,7 @@
 #include <map>
 #include <algorithm>
 #include <functional>
-/*
+/**
  * Registry
  * Class of the registry for the ecs
  */
@@ -24,7 +24,7 @@ class Registry {
     public:
         using entity_t = size_t;
 
-        /*
+        /**
          * registerComponent
          * Register a component
          * @return: the component
@@ -39,7 +39,7 @@ class Registry {
             return std::any_cast<SparseArray<Component> &>(_components_arrays[type]);
         }
 
-        /*
+        /**
          * getComponent
          * Get a component
          * @return: the component
@@ -54,7 +54,7 @@ class Registry {
             return std::any_cast<SparseArray<Component> &>(_components_arrays[type]);
         }
 
-        /*
+        /**
          * spawnEntity
          * Spawn an entity
          * @return: the entity
@@ -65,7 +65,7 @@ class Registry {
             return _entities.size() - 1;
         }
 
-        /*
+        /**
          * getEntityFromIndex
          * Get an entity from an index
          * @param index: the index
@@ -76,7 +76,7 @@ class Registry {
             return _entities[index];
         }
 
-        /*
+        /**
          * getEntities
          * Get all the entities
          * @return: the entities
@@ -86,7 +86,7 @@ class Registry {
             return _entities;
         }
 
-        /*
+        /**
          * killEntity
          * Kill an entity
          * @param entity: the entity
@@ -102,7 +102,7 @@ class Registry {
             }
         }
 
-        /*
+        /**
          * addComponent
          * Add a component
          * @param entity: the entity
@@ -125,7 +125,7 @@ class Registry {
             return array.insert_at(entity, std::forward<Component>(component));;
         }
 
-        /*
+        /**
          * emplaceComponent
          * Emplace a component
          * @param entity: the entity
@@ -149,7 +149,7 @@ class Registry {
             return array[entity];
         }
 
-        /*
+        /**
          * addSystem
          * Add a system
          * @param function: the function
@@ -162,7 +162,7 @@ class Registry {
             registerComponent<std::function<void(Registry &)>>().push_back(system);
         }
 
-        /*
+        /**
          * addSystem
          * Add a system
          * @param function: the function
@@ -177,7 +177,7 @@ class Registry {
         }
 
 
-        /*
+        /**
          * runSystems
          * Run the systems
          */
@@ -190,7 +190,7 @@ class Registry {
             }
         }
 
-        /*
+        /**
          * removeComponent
          * Remove a component
          * @param entity: the entity
@@ -202,7 +202,7 @@ class Registry {
             array.erase(entity);
         }
 
-        /*
+        /**
          * hasComponent
          * Check if the entity has a component
          * @param entity: the entity

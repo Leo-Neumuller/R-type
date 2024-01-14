@@ -16,21 +16,21 @@
 
 namespace components {
 
-    /*
+    /**
      * Drawable
      * Component of the drawable
      * @sprite: sprite of the drawable
      */
     typedef sf::Sprite Drawable;
 
-    /*
+    /**
      * Event
      * Component of the event
      * @event: event
      */
     typedef sf::Event Event;
 
-    /*
+    /**
      * EventQueues
      * Component of the event queues
      * @keyboardEvents: queue of keyboard events
@@ -41,21 +41,21 @@ namespace components {
         std::queue<sf::Event> windowEvents;
     };
 
-    /*
+    /**
      * Textures
      * Component of the textures
      * @textures: map of textures
      */
     typedef const std::map<std::string, sf::Texture> Textures;
 
-    /*
+    /**
      * Window
      * Component of the window
      * @window: pointer to the window
      */
     typedef sf::RenderWindow *Window;
 
-    /*
+    /**
      * EntityType
      * Enum of the entity types
      * @CURRENT_PLAYER: current player
@@ -92,14 +92,14 @@ namespace components {
         UNKNOWN
     };
 
-    /*
+    /**
      * NetworkHandler
      * Component of the network handler
      * @networkHandler: pointer to the network handler
      */
     typedef network::NetworkHandler<EPacketServer> *NetworkHandler;
 
-    /*
+    /**
      * LastVelocity
      * Component of the last velocity
      * @vx: last x velocity

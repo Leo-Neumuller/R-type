@@ -14,7 +14,7 @@
 
 namespace server {
 
-    /*
+    /**
      * PacketCallbacks
      * Class of the packet callbacks
      */

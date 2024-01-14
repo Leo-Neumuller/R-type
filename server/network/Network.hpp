@@ -15,7 +15,7 @@
 
 namespace server {
 
-    /*
+    /**
      * Network
      * Class of the network
      */

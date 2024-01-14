@@ -14,7 +14,7 @@
 
 namespace network {
 
-    /*
+    /**
      * IdGenerator
      * Class of the id generator
      */

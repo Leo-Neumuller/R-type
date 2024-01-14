@@ -9,7 +9,7 @@
 
 namespace server {
 
-    /*
+    /**
      * helloCallback
      * Hello packet callback
      * @param server: the server
@@ -59,7 +59,7 @@ namespace server {
             }
     }
 
-    /*
+    /**
      * debugCallback
      * Debug packet callback
      * @param server: the server
@@ -73,7 +73,7 @@ namespace server {
         std::cout << "Debug from client: " << data << std::endl;
     }
 
-    /*
+    /**
      * sendPosVelCallback
      * Send position and velocity packet callback
      * @param server: the server

@@ -14,7 +14,7 @@
 
 namespace components {
 
-    /*
+    /**
      * Position
      * Structure of the position
      */
@@ -23,7 +23,7 @@ namespace components {
         float y;
     };
 
-    /*
+    /**
      * Velocity
      * Structure of the velocity
      */
@@ -32,7 +32,7 @@ namespace components {
         float vy;
     };
 
-    /*
+    /**
      * Size
      * Structure of the size
      */
@@ -41,7 +41,7 @@ namespace components {
         float height;
     };
 
-    /*
+    /**
      * Anim
      * Structure of the animation
      */
@@ -53,7 +53,7 @@ namespace components {
         std::map<int, sf::IntRect> spriteFrames;
     };
 
-    /*
+    /**
      * MissileStruct
      * Structure of the missile
      */

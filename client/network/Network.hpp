@@ -15,7 +15,7 @@
 
 namespace client {
 
-    /*
+    /**
      * Network
      * Class of the network
      */

@@ -11,7 +11,7 @@
 #include "asio.hpp"
 
 namespace network {
-    /*
+    /**
      * NetworkClient
      * Constructor of NetworkClient
      * @param id: the id
@@ -26,7 +26,7 @@ namespace network {
 
     }
 
-    /*
+    /**
      * ~NetworkClient
      * Destructor of NetworkClient
      */
@@ -34,7 +34,7 @@ namespace network {
     {
     }
 
-    /*
+    /**
      * getBufferForPacket
      * Get the buffer for packet
      * @return: the buffer for packet
@@ -44,7 +44,7 @@ namespace network {
         return _buffer_for_packet;
     }
 
-    /*
+    /**
      * getBufferedSize
      * Get the buffered size
      * @return: the buffered size
@@ -54,7 +54,7 @@ namespace network {
         return _buffered_size;
     }
 
-    /*
+    /**
      * setBufferedSize
      * Set the buffered size
      * @param bufferedSize: the buffered size
@@ -64,7 +64,7 @@ namespace network {
         _buffered_size = bufferedSize;
     }
 
-    /*
+    /**
      * getBufferedId
      * Get the buffered id
      * @return: the buffered id
@@ -74,7 +74,7 @@ namespace network {
         return _buffered_id;
     }
 
-    /*
+    /**
      * setBufferedId
      * Set the buffered id
      * @param bufferedId: the buffered id
@@ -84,7 +84,7 @@ namespace network {
         _buffered_id = bufferedId;
     }
 
-    /*
+    /**
      * isConnected
      * Check if the client is connected
      * @return: true if the client is connected, false otherwise
@@ -94,7 +94,7 @@ namespace network {
         return _connected;
     }
 
-    /*
+    /**
      * setConnected
      * Set if the client is connected
      * @param connected: true if connected, false otherwise
@@ -104,7 +104,7 @@ namespace network {
         _connected = connected;
     }
 
-    /*
+    /**
      * send
      * Send data to the client through a callback
      * @param data: the data to send
@@ -114,7 +114,7 @@ namespace network {
         _send_callback(data);
     }
 
-    /*
+    /**
      * getBufferedPacketCount
      * Get the buffered packet count
      * @return: the buffered packet count
@@ -124,7 +124,7 @@ namespace network {
         return _buffered_packet_count;
     }
 
-    /*
+    /**
      * setBufferedPacketCount
      * Set the buffered packet count
      * @param bufferedPacketCount: the buffered packet count
@@ -134,7 +134,7 @@ namespace network {
         _buffered_packet_count = bufferedPacketCount;
     }
 
-    /*
+    /**
      * getPackets
      * Get the packets map
      * @return: the packets map

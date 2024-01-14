@@ -12,7 +12,7 @@
 
 namespace server {
 
-    /*
+    /**
      * Server
      * Constructor of Server
      */
@@ -21,7 +21,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * ~Server
      * Destructor of Server
      */
@@ -29,7 +29,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * runNetwork
      * Run the network
      * @param port: the port
@@ -39,7 +39,7 @@ namespace server {
         _network.run(port);
     }
 
-    /*
+    /**
      * runServer
      * Run the server
      */
@@ -62,7 +62,7 @@ namespace server {
 
     }
 
-    /*
+    /**
      * networkHandler
      * Handle the network
      */
@@ -82,7 +82,7 @@ namespace server {
         }
     }
 
-    /*
+    /**
      * setup
      * Setup the server (register packets, components, systems)
      * @param deltatime: the deltatime
@@ -107,7 +107,7 @@ namespace server {
 
     }
 
-    /*
+    /**
      * getPacketsRegistry
      * Get the packets registry
      * @return: the packets registry
@@ -117,7 +117,7 @@ namespace server {
         return _packets_registry;
     }
 
-    /*
+    /**
      * getNetworkHandler
      * Get the network handler
      * @return: the network handler
@@ -127,7 +127,7 @@ namespace server {
         return _network_handler;
     }
 
-    /*
+    /**
      * registerNewPlayer
      * Register a new player
      * @param id: the id of the player
@@ -142,7 +142,7 @@ namespace server {
         _ecs.addComponent(entity, components::Id{id});
     }
 
-    /*
+    /**
      * getTimedEvents
      * Get the timed events
      * @return: the timed events
@@ -152,7 +152,7 @@ namespace server {
         return _timed_events;
     }
 
-    /*
+    /**
      * getEcs
      * Get the ecs
      * @return: the ecs
@@ -162,7 +162,7 @@ namespace server {
         return _ecs;
     }
 
-    /*
+    /**
      * setPlayerPos
      * Set the player position
      * @param id: the id of the player
@@ -179,7 +179,7 @@ namespace server {
         }
     }
 
-    /*
+    /**
      * setPlayerVel
      * Set the player velocity
      * @param id: the id of the player
