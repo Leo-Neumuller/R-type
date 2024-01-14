@@ -62,6 +62,13 @@ namespace components {
         bool active;
     };
 
+    struct Enemy
+    {
+        int life;
+        int attack;
+        float missileTimer;
+    };
+
     typedef int Id;
 
 } // ecs

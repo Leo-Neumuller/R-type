@@ -64,7 +64,7 @@ namespace client {
                 _packets_registry.registerPacketClient<Args...>([](int id, Args... args) {}, packet);
             }
 
-
+            static void spawnEnnemy(Registry &ecs, float x, float y);
 
             bool isConnected() const;
             void setConnected(bool connected);

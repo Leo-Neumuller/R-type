@@ -18,9 +18,10 @@ namespace ecs {
      * @param draw
      * @param size
      */
-    void ClientSystems::drawSystem(Registry &ecs, SparseArray<components::Position> &pos,
-                                   SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size)
-    {
+    void ClientSystems::drawSystem(Registry &ecs, float deltatime, SparseArray<components::Position> &pos,
+                                   SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size, SparseArray<components::Enemy> &enemy, SparseArray<components::Velocity> &vel)
+                                   {
+
         auto &window_comps = ecs.getComponent<components::Window>();
         components::Window window = nullptr;
 
@@ -34,8 +35,19 @@ namespace ecs {
             return;
         if (!window->isOpen())
             return;
-        for (int i = 0; i < pos.size() && i < draw.size() && i < size.size(); i++) {
-            if (pos.has_index(i) && draw.has_index(i) && size.has_index(i)) {
+        static bool gameStarted = false;
+        if (!gameStarted)
+        {
+            spawnEnnemy(ecs, 745, 100);
+            spawnEnnemy(ecs, 745, 300);
+            spawnEnnemy(ecs, 745, 500);
+            gameStarted = true;
+        }
+
+        for (int i = 0; i < pos.size() && i < draw.size() && i < size.size(); i++)
+        {
+            if (pos.has_index(i) && draw.has_index(i) && size.has_index(i))
+            {
                 draw[i]->setPosition(pos[i]->x, pos[i]->y);
                 window->draw(*draw[i]);
             }
@@ -43,6 +55,59 @@ namespace ecs {
                 pos[i]->x = 0;
             }
         }
+        for (int i = 0; i < enemy.size(); i++)
+        {
+            if (enemy.has_index(i))
+            {
+                pos[i]->y = std::max(0.0f, std::min(545.0f, pos[i]->y));
+
+                float moveSpeed = 150; // Adjust the speed as needed
+                if (rand() % 500 == 0)
+                {
+                    vel[i]->vy = (vel[i]->vy > 0) ? -moveSpeed : moveSpeed;
+                }
+                enemy[i]->missileTimer += deltatime;
+                if (enemy[i]->missileTimer >= 1.0f)
+                {
+                    spawnEnemyMissile(ecs, i, pos[i]->x, pos[i]->y);
+                    enemy[i]->missileTimer = 0.0f;
+                }
+            }
+        }
+    }
+
+    void ClientSystems::spawnEnemyMissile(Registry &ecs, int enemyIndex, float x, float y)
+    {
+        auto loaderTmp = ecs.getComponent<Loader *>();
+        Loader *loader;
+
+        for (int i = 0; i < loaderTmp.size(); ++i)
+        {
+            if (loaderTmp.has_index(i))
+            {
+                loader = loaderTmp[i].value();
+                break;
+            }
+        }
+        if (!loader)
+            return;
+
+        auto missile(ecs.spawnEntity());
+
+        ecs.addComponent(missile, components::Position{x - 40, y});
+        ecs.addComponent(missile, components::Velocity{-200, 0});
+
+        std::map<int, sf::IntRect> spriteRects;
+        for (int i = 0; i < 3; ++i)
+            spriteRects[i] = sf::IntRect(i * 35, 0, 35, 35);
+        ecs.addComponent(missile, components::MissileStruct{0.0f, true});
+        sf::Sprite tmp(loader->getTexture("enemymissile"));
+        tmp.setTextureRect(spriteRects[0]);
+
+        ecs.addComponent(missile, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
+        ecs.addComponent(missile, components::Drawable(tmp));
+        ecs.addComponent(missile, components::Size{55, 55});
+        ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET}); // Adjust entity type as needed
     }
 
     /*
@@ -57,27 +122,30 @@ namespace ecs {
                                            SparseArray<components::Window> &window,
                                            SparseArray<components::EventQueues> &event_queues)
     {
-        for (int i = 0; i < event.size() && i < window.size(); i++) {
-            if (event.has_index(i) && window.has_index(i) && event_queues.has_index(i)) {
+        for (int i = 0; i < event.size() && i < window.size(); i++)
+        {
+            if (event.has_index(i) && window.has_index(i) && event_queues.has_index(i))
+            {
                 if (!(*window[i]))
                     continue;
                 if (!(*window[i])->isOpen())
                     continue;
 
-
-                while ((*window[i])->pollEvent((*event[i]))) {
-                    switch ((*event[i]).type) {
-                        case sf::Event::Closed:
-                            event_queues[i]->windowEvents.push(event[i].value());
-                            break;
-                        case sf::Event::KeyPressed:
-                            event_queues[i]->keyboardEvents.push(event[i].value());
-                            break;
-                        case sf::Event::KeyReleased:
-                            event_queues[i]->keyboardEvents.push(event[i].value());
-                            break;
-                        default:
-                            break;
+                while ((*window[i])->pollEvent((*event[i])))
+                {
+                    switch ((*event[i]).type)
+                    {
+                    case sf::Event::Closed:
+                        event_queues[i]->windowEvents.push(event[i].value());
+                        break;
+                    case sf::Event::KeyPressed:
+                        event_queues[i]->keyboardEvents.push(event[i].value());
+                        break;
+                    case sf::Event::KeyReleased:
+                        event_queues[i]->keyboardEvents.push(event[i].value());
+                        break;
+                    default:
+                        break;
                     }
                 }
             }
@@ -94,10 +162,16 @@ namespace ecs {
     void ClientSystems::windowEventsSystem(Registry &ecs, SparseArray<components::Window> &window,
                                            SparseArray<components::EventQueues> &event_queues)
     {
-        for (int i = 0; i < window.size() && i < event_queues.size(); i++) {
-            if (window.has_index(i) && event_queues.has_index(i)) {
-                while (!event_queues[i]->windowEvents.empty()) {
-                    if (event_queues[i]->windowEvents.front().type == sf::Event::Closed) {
+        for (int i = 0; i < window.size() && i < event_queues.size(); i++)
+        {
+            if (window.has_index(i) && event_queues.has_index(i))
+            {
+                while (!event_queues[i]->windowEvents.empty())
+                {
+                    if (event_queues[i]->windowEvents.front().type == sf::Event::Closed)
+                    {
+                        ecs.killEntity(i);
+                        std::cout << "window close" << std::endl;
                         (*window[i])->close();
                     }
                     event_queues[i]->windowEvents.pop();
@@ -123,8 +197,10 @@ namespace ecs {
         std::queue<sf::Event> *events = nullptr;
         sf::Event singleEvent = sf::Event();
 
-        for (int i = 0; i < event_queues.size(); ++i) {
-            if (event_queues.has_index(i)) {
+        for (int i = 0; i < event_queues.size(); ++i)
+        {
+            if (event_queues.has_index(i))
+            {
                 events = &event_queues[i]->keyboardEvents;
                 break;
             }
@@ -134,57 +210,104 @@ namespace ecs {
         if (events->empty())
             return;
 
-        for (int i = 0; i < vel.size() && i < type.size(); i++) {
-            if (vel.has_index(i) && type.has_index(i)) {
+        for (int i = 0; i < vel.size() && i < type.size(); i++)
+        {
+            if (vel.has_index(i) && type.has_index(i))
+            {
                 if (type[i] != components::EntityType::CURRENT_PLAYER)
                     continue;
-                while (!events->empty()) {
+                while (!events->empty())
+                {
                     singleEvent = events->front();
-                    if (singleEvent.type == sf::Event::KeyPressed) {
-                        switch (singleEvent.key.code) {
-                            case sf::Keyboard::Q:
-                                vel[i]->vx = -100;
-                                break;
-                            case sf::Keyboard::D:
-                                vel[i]->vx = 100;
-                                break;
-                            case sf::Keyboard::Z:
-                                vel[i]->vy = -100;
-                                break;
-                            case sf::Keyboard::S:
-                                vel[i]->vy = 100;
-                                break;
-                            case sf::Keyboard::Space:
-                                if (pos.has_index(i))
-                                    playerMissile(ecs, i, pos[i]->x, pos[i]->y);
-                                break;
-                            default:
-                                break;
-
+                    if (singleEvent.type == sf::Event::KeyPressed)
+                    {
+                        switch (singleEvent.key.code)
+                        {
+                        case sf::Keyboard::Q:
+                        case sf::Keyboard::Left:
+                            vel[i]->vx = -100;
+                            break;
+                        case sf::Keyboard::D:
+                        case sf::Keyboard::Right:
+                            vel[i]->vx = 100;
+                            break;
+                        case sf::Keyboard::Z:
+                        case sf::Keyboard::Up:
+                            vel[i]->vy = -100;
+                            break;
+                        case sf::Keyboard::S:
+                        case sf::Keyboard::Down:
+                            vel[i]->vy = 100;
+                            break;
+                        case sf::Keyboard::Space:
+                            if (pos.has_index(i))
+                                playerMissile(ecs, i, pos[i]->x, pos[i]->y);
+                            break;
+                        case sf::Keyboard::E:
+                            spawnEnnemy(ecs, 745, pos[i]->y);
+                            break;
+                        default:
+                            break;
                         }
-                    } else if (singleEvent.type == sf::Event::KeyReleased) {
-                        switch (singleEvent.key.code) {
-                            case sf::Keyboard::Q:
-                                vel[i]->vx = 0;
-                                break;
-                            case sf::Keyboard::D:
-                                vel[i]->vx = 0;
-                                break;
-                            case sf::Keyboard::Z:
-                                vel[i]->vy = 0;
-                                break;
-                            case sf::Keyboard::S:
-                                vel[i]->vy = 0;
-                                break;
-                            default:
-                                break;
-
+                    }
+                    else if (singleEvent.type == sf::Event::KeyReleased)
+                    {
+                        switch (singleEvent.key.code)
+                        {
+                        case sf::Keyboard::Q:
+                        case sf::Keyboard::Left:
+                            vel[i]->vx = 0;
+                            break;
+                        case sf::Keyboard::D:
+                        case sf::Keyboard::Right:
+                            vel[i]->vx = 0;
+                            break;
+                        case sf::Keyboard::Z:
+                        case sf::Keyboard::Up:
+                            vel[i]->vy = 0;
+                            break;
+                        case sf::Keyboard::S:
+                        case sf::Keyboard::Down:
+                            vel[i]->vy = 0;
+                            break;
+                        default:
+                            break;
                         }
                     }
                     events->pop();
                 }
             }
         }
+    }
+
+    void ClientSystems::spawnEnnemy(Registry &ecs, float x, float y)
+    {
+        auto loaderTmp = ecs.getComponent<Loader *>();
+        Loader *loader;
+        for (int i = 0; i < loaderTmp.size(); ++i)
+        {
+            if (loaderTmp.has_index(i))
+            {
+                loader = loaderTmp[i].value();
+                break;
+            }
+        }
+        if (!loader)
+            return;
+        auto enemy(ecs.spawnEntity());
+        ecs.addComponent(enemy, components::Position{x, y});
+        ecs.addComponent(enemy, components::Velocity{0, 0});
+        ecs.addComponent(enemy, components::Enemy{10, 2, 0.0f});
+        std::map<int, sf::IntRect> spriteRects;
+        for (int i = 0; i < 3; ++i)
+            spriteRects[i] = sf::IntRect(i * 55, 0, 55, 55);
+        sf::Sprite tmp(loader->getTexture("enemy"));
+        tmp.setTextureRect(spriteRects[0]);
+        ecs.addComponent(enemy, components::Enemy{10, 2});
+        ecs.addComponent(enemy, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
+        ecs.addComponent(enemy, components::Drawable(tmp));
+        ecs.addComponent(enemy, components::Size{100, 100});
+        ecs.addComponent(enemy, components::EntityType{components::EntityType::ENEMY});
     }
 
 
@@ -201,9 +324,10 @@ namespace ecs {
         auto loaderTmp = ecs.getComponent<Loader *>();
         Loader *loader;
 
-
-        for (int i = 0; i < loaderTmp.size(); ++i) {
-            if (loaderTmp.has_index(i)) {
+        for (int i = 0; i < loaderTmp.size(); ++i)
+        {
+            if (loaderTmp.has_index(i))
+            {
                 loader = loaderTmp[i].value();
                 break;
             }
@@ -211,7 +335,7 @@ namespace ecs {
         if (!loader)
             return;
 
-        auto missile (ecs.spawnEntity());
+        auto missile(ecs.spawnEntity());
 
         ecs.addComponent(missile, components::Position{x + 40, y});
         ecs.addComponent(missile, components::Velocity{200, 0});
@@ -220,7 +344,7 @@ namespace ecs {
         for (int i = 0; i < 6; ++i)
             spriteRects[i] = sf::IntRect(i * 30, 0, 30, 30);
         ecs.addComponent(missile, components::MissileStruct{0.0f, true});
-        sf::Sprite tmp (loader->getTexture("missile"));
+        sf::Sprite tmp(loader->getTexture("missile"));
         tmp.setTextureRect(spriteRects[0]);
 
         ecs.addComponent(missile, components::Anim{6, 0, 0.1f, 0.0f, spriteRects});
@@ -247,7 +371,8 @@ namespace ecs {
                                           SparseArray<components::NetworkHandler> &network_handler,
                                           SparseArray<components::LastVelocity> &last_vel)
     {
-        for (int i = 0; i < vel.size() && i < type.size() && i < pos.size() && i < network_handler.size() && i < last_vel.size(); i++) {
+        for (int i = 0; i < vel.size() && i < type.size() && i < pos.size() && i < network_handler.size() && i < last_vel.size(); i++)
+        {
             if (!vel.has_index(i) || !type.has_index(i) || !network_handler.has_index(i) || !pos.has_index(i) || !last_vel.has_index(i))
                 continue;
             if (type[i] != components::EntityType::CURRENT_PLAYER)
@@ -270,10 +395,13 @@ namespace ecs {
      */
     void ClientSystems::spriteAnimation(Registry &ecs, float deltatime, SparseArray<components::Drawable> &draw, SparseArray<components::Anim> &Anim)
     {
-        for (int i = 0; i < draw.size(); i++) {
-            if (Anim.has_index(i) && draw.has_index(i)) {
+        for (int i = 0; i < draw.size(); i++)
+        {
+            if (Anim.has_index(i) && draw.has_index(i))
+            {
                 Anim[i]->animationTimer += deltatime;
-                if (Anim[i]->animationTimer >= Anim[i]->animationInterval) {
+                if (Anim[i]->animationTimer >= Anim[i]->animationInterval)
+                {
                     Anim[i]->animationTimer = 0.0f;
                     Anim[i]->actualFrame = (Anim[i]->actualFrame + 1);
                     if (Anim[i]->actualFrame > Anim[i]->nbFrame - 1)
