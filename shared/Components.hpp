@@ -42,24 +42,32 @@ namespace components {
     };
 
     /**
-     * Anim
-     * Structure of the animation
-     */
-    struct Anim {
-        int nbFrame;
-        int actualFrame;
-        float animationInterval;
-        float animationTimer;
-        std::map<int, sf::IntRect> spriteFrames;
-    };
-
-    /**
      * MissileStruct
      * Structure of the missile
      */
     struct MissileStruct {
         float lifeTimer;
         bool active;
+    };
+
+    struct Enemy
+    {
+        int life;
+        int attack;
+        float missileCouldown;
+    };
+
+    struct EnemySpawnData
+    {
+        int nbEnemy;
+        float spawnCouldown;
+    };
+
+    struct playerData {
+        float fireCouldown;
+        float actualCD;
+        int life;
+        int nbKills;
     };
 
     typedef int Id;
@@ -86,6 +94,7 @@ namespace components {
     enum class EntityType {
         CURRENT_PLAYER,
         PLAYER,
+        ENEMYBULLET,
         ENEMY,
         BACKGROUND,
         BULLET,

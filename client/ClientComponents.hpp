@@ -73,6 +73,20 @@ namespace components {
         float vy;
     };
 
+
+    /**
+     * Anim
+     * Structure of the animation
+     */
+
+    struct Anim {
+        int nbFrame;
+        int actualFrame;
+        float animationInterval;
+        float animationTimer;
+        std::map<int, sf::IntRect> spriteFrames;
+    };
+
 } // ecs
 
 #endif //R_TYPE_CLIENT_CLIENTCOMPONENTS_HPP

@@ -126,7 +126,6 @@ namespace client {
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
         _ecs.registerComponent<components::Anim>();
-
         _ecs.registerComponent<components::MissileStruct>();
         _ecs.registerComponent<Loader *>();
         _ecs.registerComponent<components::Id>();
@@ -138,8 +137,13 @@ namespace client {
         _ecs.registerComponent<components::EntityType>();
         _ecs.registerComponent<components::NetworkHandler>();
         _ecs.registerComponent<components::LastVelocity>();
+        _ecs.registerComponent<components::Enemy>();
+        _ecs.registerComponent<components::EnemySpawnData>();
+        _ecs.registerComponent<components::playerData>();
+
+
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
-        _ecs.addSystem<components::Position, components::Drawable, components::Size>(ecs::ClientSystems::drawSystem);
+        _ecs.addSystem<components::Position, components::Drawable, components::Size, components::Enemy, components::Velocity>(ecs::ClientSystems::drawSystem, deltatime);
         _ecs.addSystem<components::Event, components::Window, components::EventQueues>(ecs::ClientSystems::eventPollingSystem);
         _ecs.addSystem<components::Window, components::EventQueues>(ecs::ClientSystems::windowEventsSystem);
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType, components::Position>(ecs::ClientSystems::playerMoveEvent);
@@ -148,8 +152,16 @@ namespace client {
         _ecs.addSystem<components::EventQueues, components::Velocity, components::EntityType, components::Position>(ecs::ClientSystems::playerMoveEvent);
         _ecs.addSystem<components::Drawable, components::Anim>(ecs::ClientSystems::spriteAnimation, deltatime);
         _ecs.addSystem<components::MissileStruct>(ecs::Systems::manageMissiles, deltatime);
+        _ecs.addSystem<components::EntityType, components::Position, components::Size, components::playerData, components::Enemy>(ecs::Systems::manageHitBox, deltatime);
+        _ecs.addSystem<components::EnemySpawnData>(ecs::Systems::spawnEnemy, deltatime);
+        _ecs.addSystem<components::Enemy, components::EnemySpawnData>(ecs::Systems::enemyDeath, deltatime);
+        _ecs.addSystem<components::playerData>(ecs::Systems::playerDeath, deltatime);
 
-        auto entity (_ecs.spawnEntity());
+
+
+
+
+        auto entity(_ecs.spawnEntity());
         _ecs.addComponent(entity, &_texturesFonts);
     }
 
@@ -187,6 +199,7 @@ namespace client {
         _ecs.addComponent(entity, components::Velocity{0, 0});
         _ecs.addComponent(entity, components::LastVelocity{0, 0});
         _ecs.addComponent(entity, components::Id{id});
+        _ecs.addComponent(entity, components::playerData{0.5, 0.0, 5, 0});
 
         std::map<int, sf::IntRect> spriteRects;
         for (int i = 0; i < 5; ++i)
@@ -247,6 +260,64 @@ namespace client {
         _current_player_id = id;
     }
 
+    void Client::createEnemy(components::Position pos)
+    {
+        auto loaderTmp = _ecs.getComponent<Loader *>();
+        Loader *loader;
+        for (int i = 0; i < loaderTmp.size(); ++i)
+        {
+            if (loaderTmp.has_index(i))
+            {
+                loader = loaderTmp[i].value();
+                break;
+            }
+        }
+        if (!loader)
+            return;
+        auto enemy(_ecs.spawnEntity());
+        _ecs.addComponent(enemy, components::Position{pos});
+        _ecs.addComponent(enemy, components::Velocity{0, 0});
+        _ecs.addComponent(enemy, components::Enemy{2, 1, 0.0f});
+        std::map<int, sf::IntRect> spriteRects;
+        for (int v = 0; v < 3; ++v)
+            spriteRects[v] = sf::IntRect(v * 160.6, 0, 160.6, 214);
+        sf::Sprite tmp(loader->getTexture("boss"));
+        tmp.setTextureRect(spriteRects[0]);
+        _ecs.addComponent(enemy, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
+        _ecs.addComponent(enemy, components::Drawable(tmp));
+        _ecs.addComponent(enemy, components::Size{160.6, 214});
+        _ecs.addComponent(enemy, components::EntityType{components::EntityType::ENEMY});
+
+    }
+
+    void Client::createBoss(components::Position pos)
+    {
+        auto loaderTmp = _ecs.getComponent<Loader *>();
+        Loader *loader;
+        for (int i = 0; i < loaderTmp.size(); ++i)
+        {
+            if (loaderTmp.has_index(i))
+            {
+                loader = loaderTmp[i].value();
+                break;
+            }
+        }
+        if (!loader)
+            return;
+        auto enemy(_ecs.spawnEntity());
+        _ecs.addComponent(enemy, components::Position{pos});
+        _ecs.addComponent(enemy, components::Velocity{0, 0});
+        _ecs.addComponent(enemy, components::Enemy{2, 1, 0.0f});
+        std::map<int, sf::IntRect> spriteRects;
+        for (int v = 0; v < 3; ++v)
+            spriteRects[v] = sf::IntRect(v * 55, 0, 55, 55);
+        sf::Sprite tmp(loader->getTexture("enemy"));
+        tmp.setTextureRect(spriteRects[0]);
+        _ecs.addComponent(enemy, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
+        _ecs.addComponent(enemy, components::Drawable(tmp));
+        _ecs.addComponent(enemy, components::Size{55, 55});
+        _ecs.addComponent(enemy, components::EntityType{components::EntityType::ENEMY});
+    }
     void Client::createPlayerMissile(components::Id id)
     {
         auto &ids = getEcs().getComponent<components::Id>();

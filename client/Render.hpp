@@ -31,7 +31,7 @@ namespace client {
             void startRender();
             float render();
             bool isOpen();
-            void drawSystem(Registry &ecs, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size);
+            void drawSystem(Registry &ecs, float deltatime, SparseArray<components::Position> &pos, SparseArray<components::Drawable> &draw, SparseArray<components::Size> &size, SparseArray<components::Enemy> &enemy, SparseArray<components::Velocity> &vel);
         protected:
 
         private:

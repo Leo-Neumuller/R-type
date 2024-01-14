@@ -26,6 +26,7 @@ add_executable(r-type_server
         ../shared/Components.hpp
         ../shared/Systems.cpp
         ../shared/Systems.hpp
+        ../client/src/Loader.cpp
         TimedEvents.cpp
         TimedEvents.hpp)
 
@@ -47,3 +48,25 @@ FetchContent_MakeAvailable(asio-cmake)
 target_link_libraries(r-type_server
         PRIVATE asio
 )
+
+if (UNIX)
+    include(FetchContent)
+    FetchContent_Declare(SFML
+            GIT_REPOSITORY https://github.com/SFML/SFML.git
+            GIT_TAG 2.6.x)
+    FetchContent_MakeAvailable(SFML)
+    target_link_libraries(r-type_server PRIVATE sfml-graphics)
+
+    install(TARGETS r-type_server DESTINATION bin)
+endif (UNIX)
+
+if (APPLE)
+    include(FetchContent)
+    FetchContent_Declare(SFML
+            GIT_REPOSITORY https://github.com/SFML/SFML.git
+            GIT_TAG 2.6.x)
+    FetchContent_MakeAvailable(SFML)
+    target_link_libraries(r-type_server PRIVATE sfml-graphics)
+
+    install(TARGETS r-type_client DESTINATION bin)
+endif (APPLE)

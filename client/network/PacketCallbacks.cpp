@@ -73,7 +73,6 @@ namespace client {
     {
         client->registerNewPlayer(id, pos);
         client->setCurrentPlayer(id);
-
     }
 
     /**
