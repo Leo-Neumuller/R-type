@@ -32,6 +32,10 @@ namespace client {
             static void sendPosVelCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                            components::Position &pos, components::Velocity &vel);
             static void playerShootCallback(Client *client, network::NetworkClient &server, int &fromId, int &id);
+            static void spawnEnemyCallback(Client *client, network::NetworkClient &server, int &fromId, int &id, components::Position &pos);
+            static void moveEnemyCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                          components::Position &pos, components::Velocity &vel, bool valid);
+            static void enemyShootCallback(Client *client, network::NetworkClient &server, int &fromId, int &id);
         protected:
 
         private:

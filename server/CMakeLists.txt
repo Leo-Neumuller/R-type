@@ -28,7 +28,10 @@ add_executable(r-type_server
         ../shared/Systems.hpp
         ../client/src/Loader.cpp
         TimedEvents.cpp
-        TimedEvents.hpp)
+        TimedEvents.hpp
+        ServerSystems.cpp
+        ServerSystems.hpp
+        ServerComponents.hpp)
 
 
 include_directories(../shared/ network ../shared/network/utils ../shared/network/packet .)

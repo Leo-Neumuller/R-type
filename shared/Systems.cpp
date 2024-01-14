@@ -43,7 +43,7 @@ namespace ecs {
             if (Missiles.has_index(i)) {
                 Missiles[i]->lifeTimer += deltatime;
                 if (Missiles[i]->lifeTimer >= 7.0f) {
-                    //ecs.killEntity(i);
+                    ecs.killEntity(i);
                 }
             }
         }
@@ -88,27 +88,6 @@ namespace ecs {
 
                         }
                     }
-                }
-            }
-        }
-
-    }
-
-    void Systems::spawnEnemy(Registry &ecs, float &deltatime, SparseArray<components::EnemySpawnData> &EnemySpawnData)
-    {
-        for (int i = 0; i < EnemySpawnData.size(); i++) {
-            if (EnemySpawnData.has_index(i)) {
-                EnemySpawnData[i]->spawnCouldown += deltatime;
-                int timeTmp = rand() % 4 + 2;
-                if (EnemySpawnData[i]->spawnCouldown > timeTmp) {
-                    auto enemy(ecs.spawnEntity());
-                    ecs.addComponent(enemy, components::Position{745, (float) (rand() % 971 + 30)});
-                    ecs.addComponent(enemy, components::Velocity{0, 0});
-                    ecs.addComponent(enemy, components::Enemy{2, 1, 0.0f});
-                    ecs.addComponent(enemy, components::Size{55, 55});
-                    ecs.addComponent(enemy, components::EntityType{components::EntityType::ENEMY});
-                    EnemySpawnData[i]->spawnCouldown = 0;
-                    EnemySpawnData[i]->nbEnemy++;
                 }
             }
         }

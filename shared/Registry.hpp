@@ -175,7 +175,6 @@ class Registry {
             registerComponent<std::function<void(Registry &)>>().push_back(system);
         }
 
-
         /**
          * runSystems
          * Run the systems

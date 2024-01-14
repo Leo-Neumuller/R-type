@@ -134,4 +134,37 @@ namespace client {
         client->createPlayerMissile(id);
     }
 
+    void PacketCallbacks::spawnEnemyCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                             components::Position &pos)
+    {
+        std::cout << "SPAWN ENEMY" << std::endl;
+        client->createEnemy(pos, id);
+    }
+
+    void PacketCallbacks::moveEnemyCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
+                                            components::Position &pos, components::Velocity &vel, bool valid)
+    {
+        auto &enemies = client->getEcs().getComponent<components::Enemy>();
+
+        for (auto &entity : client->getEcs().getEntities()) {
+            if (enemies.has_index(entity) && enemies[entity]->id == id) {
+                client->getEcs().getComponent<components::Position>()[entity] = pos;
+                client->getEcs().getComponent<components::Velocity>()[entity] = vel;
+                break;
+            }
+        }
+    }
+
+    void PacketCallbacks::enemyShootCallback(Client *client, network::NetworkClient &server, int &fromId, int &id)
+    {
+        auto enemies = client->getEcs().getComponent<components::Enemy>();
+
+        for (auto &entity : client->getEcs().getEntities()) {
+            if (enemies.has_index(entity) && enemies[entity]->id == id) {
+                client->spawnEnemyMissile(enemies[entity]->id, client->getEcs().getComponent<components::Position>()[entity].value().x, client->getEcs().getComponent<components::Position>()[entity].value().y);
+                break;
+            }
+        }
+    }
+
 } // client

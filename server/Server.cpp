@@ -9,6 +9,8 @@
 #include "PacketCallbacks.hpp"
 #include "Entity.hpp"
 #include "Systems.hpp"
+#include "ServerComponents.hpp"
+#include "ServerSystems.hpp"
 
 namespace server {
 
@@ -69,17 +71,17 @@ namespace server {
     void Server::networkHandler()
     {
         while (!_network_handler.isPacketQueueEmpty()) {
-            try {
+//            try {
                 _network_handler.threatPacket();
-            } catch (std::exception &e) {
-                std::cerr << "invalid packet from client: " << e.what() << std::endl;
-            }
+//            } catch (std::exception &e) {
+//                std::cerr << "invalid packet from client: " << e.what() << std::endl;
+//            }
         }
-        try {
+//        try {
             _network_handler.runPackets();
-        } catch (std::exception &e) {
-            std::cerr << "invalid packet from server: " << e.what() << std::endl;
-        }
+//        } catch (std::exception &e) {
+//            std::cerr << "invalid packet from server: " << e.what() << std::endl;
+//        }
     }
 
     /**
@@ -96,20 +98,29 @@ namespace server {
         registerPacketServer<int, components::Position, components::Velocity>(EPacketServer::FORCE_SET_POS_VEL);
         registerPacketServer<int, components::Position, components::Velocity>(EPacketServer::SEND_POS_VEL);
         registerPacketServer<int>(EPacketServer::PLAYER_SHOOT_BULLET);
+        registerPacketServer<int, components::Position>(EPacketServer::SPAWN_ENEMY);
+        registerPacketServer<int, components::Position, components::Velocity, bool>(EPacketServer::MOVE_ENEMY);
+        registerPacketServer<int>(EPacketServer::SHOOT_ENEMY);
 
         registerPacketClient(PacketCallbacks::helloCallback, EPacketClient::CLIENT_HELLO);
         registerPacketClient<std::string>(PacketCallbacks::debugCallback, EPacketClient::DEBUG_PACKET_CLIENT);
         registerPacketClient<components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketClient::CLIENT_SEND_POS_VEL);
         registerPacketClient(PacketCallbacks::playerShootCallback, EPacketClient::SHOOT_BULLET);
 
+        _ecs.registerComponent<components::ServerNetworkHandler>();
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
         _ecs.registerComponent<components::Id>();
         _ecs.registerComponent<components::EntityType>();
         _ecs.registerComponent<components::Size>();
         _ecs.registerComponent<components::MissileStruct>();
+        _ecs.registerComponent<components::Enemy>();
+        _ecs.registerComponent<components::EnemySpawnData>();
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
         _ecs.addSystem<components::MissileStruct>(ecs::Systems::manageMissiles, deltatime);
+//        _ecs.addSystem<components::EnemySpawnData>(ecs::ServerSystems::spawnEnemy, deltatime);
+//        _ecs.addSystem<components::Position, components::Velocity, components::Enemy>(ecs::ServerSystems::moveEnemy, deltatime);
+
     }
 
     /**
@@ -142,6 +153,7 @@ namespace server {
     {
         auto entity = _ecs.spawnEntity();
 
+        _ecs.addComponent(entity, components::ServerNetworkHandler{&_network_handler});
         _ecs.addComponent(entity, components::Position{pos.x, pos.y});
         _ecs.addComponent(entity, components::Velocity{0, 0});
         _ecs.addComponent(entity, components::Id{id});

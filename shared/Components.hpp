@@ -55,6 +55,7 @@ namespace components {
         int life;
         int attack;
         float missileCouldown;
+        int id;
     };
 
     struct EnemySpawnData

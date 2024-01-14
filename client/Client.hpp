@@ -64,7 +64,6 @@ namespace client {
                 _packets_registry.registerPacketClient<Args...>([](int id, Args... args) {}, packet);
             }
 
-            static void spawnEnnemy(Registry &ecs, float x, float y);
 
             bool isConnected() const;
             void setConnected(bool connected);
@@ -73,8 +72,9 @@ namespace client {
             void setCurrentPlayer(int id);
             void setupBackground();
             void createPlayerMissile(components::Id id);
-            void createEnemy(components::Position pos);
+            void createEnemy(components::Position pos, int id);
             void createBoss(components::Position pos);
+            void spawnEnemyMissile( int enemyIndex, float x, float y);
         protected:
 
 

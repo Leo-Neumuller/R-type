@@ -52,59 +52,6 @@ namespace ecs {
                 pos[i]->x = 0;
             }
         }
-        for (int i = 0; i < enemy.size(); i++)
-        {
-            if (enemy.has_index(i))
-            {
-                pos[i]->y = std::max(0.0f, std::min(545.0f, pos[i]->y));
-
-                float moveSpeed = 150; // Adjust the speed as needed
-                if (rand() % 500 == 0)
-                {
-                    vel[i]->vy = (vel[i]->vy > 0) ? -moveSpeed : moveSpeed;
-                }
-                enemy[i]->missileCouldown += deltatime;
-                if (enemy[i]->missileCouldown >= rand() % 4 + 2)
-                {
-                    spawnEnemyMissile(ecs, i, pos[i]->x, pos[i]->y);
-                    enemy[i]->missileCouldown = 0.0f;
-                }
-            }
-        }
-    }
-
-    void ClientSystems::spawnEnemyMissile(Registry &ecs, int enemyIndex, float x, float y)
-    {
-        auto loaderTmp = ecs.getComponent<Loader *>();
-        Loader *loader;
-
-        for (int i = 0; i < loaderTmp.size(); ++i)
-        {
-            if (loaderTmp.has_index(i))
-            {
-                loader = loaderTmp[i].value();
-                break;
-            }
-        }
-        if (!loader)
-            return;
-
-        auto missile(ecs.spawnEntity());
-
-        ecs.addComponent(missile, components::Position{x - 40, y});
-        ecs.addComponent(missile, components::Velocity{-200, 0});
-
-        std::map<int, sf::IntRect> spriteRects;
-        for (int i = 0; i < 3; ++i)
-            spriteRects[i] = sf::IntRect(i * 35, 0, 35, 35);
-        ecs.addComponent(missile, components::MissileStruct{0.0f, true});
-        sf::Sprite tmp(loader->getTexture("enemymissile"));
-        tmp.setTextureRect(spriteRects[0]);
-
-        ecs.addComponent(missile, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
-        ecs.addComponent(missile, components::Drawable(tmp));
-        ecs.addComponent(missile, components::Size{35, 35});
-        ecs.addComponent(missile, components::EntityType{components::EntityType::ENEMYBULLET}); // Adjust entity type as needed
     }
 
     /**
@@ -354,6 +301,7 @@ namespace ecs {
         for (int i = 0; i < network_handler.size(); ++i) {
             if (network_handler.has_index(i)) {
                 network_handler[i].value()->serializeSendPacket<network::GenericPacket<std::any>>(0, EPacketClient::SHOOT_BULLET);
+                break;
             }
         }
 

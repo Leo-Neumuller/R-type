@@ -42,6 +42,9 @@ enum EPacketServer {
     FORCE_SET_POS_VEL,
     SEND_POS_VEL,
     PLAYER_SHOOT_BULLET,
+    SPAWN_ENEMY,
+    MOVE_ENEMY,
+    SHOOT_ENEMY,
     SERVER_DISCONNECT
 };
 

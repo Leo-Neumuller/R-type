@@ -53,8 +53,8 @@ namespace server {
                 if (ids.has_index(entity) && ids[entity] != fromId) {
                     server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
                             fromId, EPacketServer::FORCE_SET_POS_VEL, ids[entity].value(), server->getEcs().getComponent<components::Position>()[entity].value(), server->getEcs().getComponent<components::Velocity>()[entity].value());
-                    server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
-                            ids[entity].value(), EPacketServer::FORCE_SET_POS_VEL, fromId, server->getEcs().getComponent<components::Position>()[fromId].value(), server->getEcs().getComponent<components::Velocity>()[fromId].value());
+//                    server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int, components::Position, components::Velocity>>(
+//                            ids[entity].value(), EPacketServer::FORCE_SET_POS_VEL, fromId, server->getEcs().getComponent<components::Position>()[fromId].value(), server->getEcs().getComponent<components::Velocity>()[fromId].value());
                 }
             }
     }
@@ -116,7 +116,6 @@ namespace server {
         auto &poss = server->getEcs().getComponent<components::Position>();
         auto &ids = server->getEcs().getComponent<components::Id>();
 
-        std::cout << "SHOOOOT" << std::endl;
         for (auto &entity : server->getEcs().getEntities()) {
             if (ids.has_index(entity) && poss.has_index(entity) && ids[entity] == fromId) {
                 server->getEcs().addComponent(missile, components::Position{poss[entity]->x + 40, poss[entity]->y});
