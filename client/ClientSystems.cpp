@@ -38,9 +38,6 @@ namespace ecs {
         static bool gameStarted = false;
         if (!gameStarted)
         {
-            spawnEnnemy(ecs, 745, 100);
-            spawnEnnemy(ecs, 745, 300);
-            spawnEnnemy(ecs, 745, 500);
             gameStarted = true;
         }
 
@@ -66,11 +63,11 @@ namespace ecs {
                 {
                     vel[i]->vy = (vel[i]->vy > 0) ? -moveSpeed : moveSpeed;
                 }
-                enemy[i]->missileTimer += deltatime;
-                if (enemy[i]->missileTimer >= 1.0f)
+                enemy[i]->missileCouldown += deltatime;
+                if (enemy[i]->missileCouldown >= rand() % 4 + 2)
                 {
                     spawnEnemyMissile(ecs, i, pos[i]->x, pos[i]->y);
-                    enemy[i]->missileTimer = 0.0f;
+                    enemy[i]->missileCouldown = 0.0f;
                 }
             }
         }
@@ -106,8 +103,8 @@ namespace ecs {
 
         ecs.addComponent(missile, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
         ecs.addComponent(missile, components::Drawable(tmp));
-        ecs.addComponent(missile, components::Size{55, 55});
-        ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET}); // Adjust entity type as needed
+        ecs.addComponent(missile, components::Size{35, 35});
+        ecs.addComponent(missile, components::EntityType{components::EntityType::ENEMYBULLET}); // Adjust entity type as needed
     }
 
     /*
@@ -240,8 +237,9 @@ namespace ecs {
                             vel[i]->vy = 100;
                             break;
                         case sf::Keyboard::Space:
-                            if (pos.has_index(i))
+                            if (pos.has_index(i)) {
                                 playerMissile(ecs, i, pos[i]->x, pos[i]->y);
+                            }
                             break;
                         case sf::Keyboard::E:
                             spawnEnnemy(ecs, 745, pos[i]->y);
@@ -306,7 +304,7 @@ namespace ecs {
         ecs.addComponent(enemy, components::Enemy{10, 2});
         ecs.addComponent(enemy, components::Anim{3, 0, 0.1f, 0.0f, spriteRects});
         ecs.addComponent(enemy, components::Drawable(tmp));
-        ecs.addComponent(enemy, components::Size{100, 100});
+        ecs.addComponent(enemy, components::Size{55, 55});
         ecs.addComponent(enemy, components::EntityType{components::EntityType::ENEMY});
     }
 

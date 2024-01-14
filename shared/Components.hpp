@@ -41,17 +41,6 @@ namespace components {
         float height;
     };
 
-    /*
-     * Anim
-     * Structure of the animation
-     */
-    struct Anim {
-        int nbFrame;
-        int actualFrame;
-        float animationInterval;
-        float animationTimer;
-        std::map<int, sf::IntRect> spriteFrames;
-    };
 
     /*
      * MissileStruct
@@ -66,7 +55,20 @@ namespace components {
     {
         int life;
         int attack;
-        float missileTimer;
+        float missileCouldown;
+    };
+
+    struct EnemySpawnData
+    {
+        int nbEnemy;
+        float spawnCouldown;
+    };
+
+    struct playerData {
+        float fireCouldown;
+        float actualCD;
+        int life;
+        int nbKills;
     };
 
     typedef int Id;

@@ -18,6 +18,8 @@
 #include "src/Loader.hpp"
 #include "network/NetworkHandler.hpp"
 #include "network/NetworkClient.hpp"
+#include <SFML/Graphics.hpp>
+
 
 namespace ecs {
 

@@ -72,7 +72,10 @@ namespace client {
             Registry &getEcs();
             void setCurrentPlayer(int id);
             void setupBackground();
-        protected:
+            void createEnemy(components::Position pos);
+            void createBoss(components::Position pos);
+
+    protected:
 
         private:
             void setup(float &deltatime);

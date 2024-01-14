@@ -79,7 +79,9 @@ namespace components {
         PLAYER,
         ENEMY,
         BACKGROUND,
+        ENEMYBULLET,
         BULLET,
+        BOSS,
         OBSTACLE,
         UI,
         BUTTON,
@@ -108,6 +110,19 @@ namespace components {
     struct LastVelocity {
         float vx;
         float vy;
+    };
+
+
+    /*
+     * Anim
+     * Structure of the animation
+     */
+    struct Anim {
+        int nbFrame;
+        int actualFrame;
+        float animationInterval;
+        float animationTimer;
+        std::map<int, sf::IntRect> spriteFrames;
     };
 
 } // ecs
