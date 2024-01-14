@@ -9,11 +9,16 @@
 #include <SFML/Graphics.hpp>
 #include "src/Loader.hpp"
 #include "Client.hpp"
+#include <stdlib.h>
+#include "src/Menu.hpp"
 
 int main() {
-    client::Client client;
-
-    client.connectToServer("127.0.0.1", 4242);
-    client.runClient();
+    if (Menu() == 1)
+        return 1;
+    else {
+        client::Client client;
+        client.connectToServer(Ip, Port);
+        client.runClient();
+    }
     return 0;
 }
