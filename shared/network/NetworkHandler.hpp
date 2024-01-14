@@ -20,14 +20,14 @@
 
 namespace network{
 
-    /*
+    /**
      * NetworkHandler
      * Class to handle the network
      */
     template<typename FromType>
     class NetworkHandler {
         public:
-            /*
+            /**
              * Constructor
              * @param _clients: the clients
              * @param packets_registry: the packets registry
@@ -37,14 +37,14 @@ namespace network{
             {
             }
 
-            /*
+            /**
              * Destructor
              */
             ~NetworkHandler()
             {
             }
 
-            /*
+            /**
              * handleReceive
              * Handle the receive
              * @param data: the data
@@ -72,7 +72,7 @@ namespace network{
                 }
             }
 
-            /*
+            /**
              * threatPacket
              * Threat the packet
              */
@@ -128,7 +128,7 @@ namespace network{
                 }
             }
 
-            /*
+            /**
              * isPacketQueueEmpty
              * Check if the packet queue is empty
              * @return true if the packet queue is empty, false otherwise
@@ -139,7 +139,7 @@ namespace network{
                 return _packet_stack.empty();
             }
 
-            /*
+            /**
              * serializeSendPacket
              * Serialize and send a packet
              * @param client_id: the client id
@@ -162,7 +162,7 @@ namespace network{
                 _clients.at(client_id).send(*data);
             }
 
-            /*
+            /**
              * serializePacket
              * Serialize a packet
              * @param packet_id: the packet id
@@ -184,7 +184,7 @@ namespace network{
                 return data;
             }
 
-            /*
+            /**
              * runPackets
              * Run the packets
              */
@@ -204,7 +204,7 @@ namespace network{
         protected:
 
         private:
-            /*
+            /**
              * _threadDataPacket
              * Thread the data packet
              * @param size: the size
@@ -234,7 +234,7 @@ namespace network{
                 _clients.at(client_id).getPackets().emplace(packet_count, packet);
             }
 
-            /*
+            /**
              * handler
              * fake dummy handler
              */

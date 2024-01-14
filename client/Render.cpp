@@ -10,7 +10,7 @@
 
 namespace client {
 
-    /*
+    /**
      * Render
      * Constructor of Render
      */
@@ -18,7 +18,7 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * ~Render
      * Destructor of Render
      */
@@ -26,7 +26,7 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * startRender
      * Start the render
      */
@@ -42,7 +42,7 @@ namespace client {
         _clock.restart();
     }
 
-    /*
+    /**
      * render
      * Render the window
      * @return: the time elapsed since the last frame
@@ -55,7 +55,7 @@ namespace client {
         return _clock.restart().asSeconds();
     }
 
-    /*
+    /**
      * isOpen
      * Check if the window is open
      * @return: true if the window is open, false otherwise

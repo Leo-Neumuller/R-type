@@ -8,7 +8,7 @@
 #ifndef R_TYPE_SERVER_EPACKET_HPP
 #define R_TYPE_SERVER_EPACKET_HPP
 
-/*
+/**
  * EPacketResponse
  * Enum of the packet response
  */
@@ -18,7 +18,7 @@ enum EPacketResponse {
     UNKNOWN
 };
 
-/*
+/**
  * EPacketType
  * Enum of the packet type
  */
@@ -26,10 +26,11 @@ enum EPacketClient {
     DEBUG_PACKET_CLIENT,
     CLIENT_HELLO,
     CLIENT_SEND_POS_VEL,
+    SHOOT_BULLET,
     CLIENT_DISCONNECT
 };
 
-/*
+/**
  * EPacketServer
  * Enum of the packet type
  */
@@ -40,6 +41,7 @@ enum EPacketServer {
     CLIENT_BASE_INFO,
     FORCE_SET_POS_VEL,
     SEND_POS_VEL,
+    PLAYER_SHOOT_BULLET,
     SERVER_DISCONNECT
 };
 

@@ -10,7 +10,7 @@
 namespace ecs {
 
 
-    /*
+    /**
      * drawSystem
      * System for drawing entities
      * @param ecs
@@ -107,7 +107,7 @@ namespace ecs {
         ecs.addComponent(missile, components::EntityType{components::EntityType::ENEMYBULLET}); // Adjust entity type as needed
     }
 
-    /*
+    /**
      * eventPollingSystem
      * System for polling events
      * @param ecs
@@ -149,7 +149,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * windowEventsSystem
      * System for window events
      * @param ecs
@@ -177,7 +177,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * playerMoveEvent
      * System for player move events
      * @param ecs
@@ -309,7 +309,7 @@ namespace ecs {
     }
 
 
-    /*
+    /**
      * playerMissile
      * System for player missile
      * @param ecs
@@ -319,6 +319,7 @@ namespace ecs {
      */
     void ClientSystems::playerMissile(Registry &ecs, int index, float x, float y)
     {
+        auto network_handler = ecs.getComponent<components::NetworkHandler>();
         auto loaderTmp = ecs.getComponent<Loader *>();
         Loader *loader;
 
@@ -350,9 +351,15 @@ namespace ecs {
         ecs.addComponent(missile, components::Size{30, 30});
         ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET});
 
+        for (int i = 0; i < network_handler.size(); ++i) {
+            if (network_handler.has_index(i)) {
+                network_handler[i].value()->serializeSendPacket<network::GenericPacket<std::any>>(0, EPacketClient::SHOOT_BULLET);
+            }
+        }
+
     }
 
-    /*
+    /**
      * playerMoveNetwork
      * System for player move network
      * @param ecs
@@ -383,7 +390,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * spriteAnimation
      * System for sprite animation
      * @param ecs

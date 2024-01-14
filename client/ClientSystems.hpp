@@ -23,7 +23,7 @@
 
 namespace ecs {
 
-    /*
+    /**
      * ClientSystems
      * Class of the client systems
      */

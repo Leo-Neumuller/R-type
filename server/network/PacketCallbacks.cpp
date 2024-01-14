@@ -9,7 +9,7 @@
 
 namespace server {
 
-    /*
+    /**
      * helloCallback
      * Hello packet callback
      * @param server: the server
@@ -59,7 +59,7 @@ namespace server {
             }
     }
 
-    /*
+    /**
      * debugCallback
      * Debug packet callback
      * @param server: the server
@@ -73,7 +73,7 @@ namespace server {
         std::cout << "Debug from client: " << data << std::endl;
     }
 
-    /*
+    /**
      * sendPosVelCallback
      * Send position and velocity packet callback
      * @param server: the server
@@ -105,6 +105,31 @@ namespace server {
                             fromId, EPacketServer::FORCE_SET_POS_VEL, ids[entity].value(), server->getEcs().getComponent<components::Position>()[entity].value(), server->getEcs().getComponent<components::Velocity>()[entity].value());
                 }
 
+            }
+        }
+    }
+
+    void
+    PacketCallbacks::playerShootCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId)
+    {
+        auto missile (server->getEcs().spawnEntity());
+        auto &poss = server->getEcs().getComponent<components::Position>();
+        auto &ids = server->getEcs().getComponent<components::Id>();
+
+        std::cout << "SHOOOOT" << std::endl;
+        for (auto &entity : server->getEcs().getEntities()) {
+            if (ids.has_index(entity) && poss.has_index(entity) && ids[entity] == fromId) {
+                server->getEcs().addComponent(missile, components::Position{poss[entity]->x + 40, poss[entity]->y});
+                server->getEcs().addComponent(missile, components::Velocity{200, 0});
+                server->getEcs().addComponent(missile, components::Size{30, 30});
+                server->getEcs().addComponent(missile, components::EntityType{components::EntityType::BULLET});
+
+                for (auto &entityOthers : server->getEcs().getEntities()) {
+                    if (ids.has_index(entityOthers) && ids[entityOthers] != fromId) {
+                        server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int>>(
+                                ids[entityOthers].value(), EPacketServer::PLAYER_SHOOT_BULLET, fromId);
+                    }
+                }
             }
         }
     }

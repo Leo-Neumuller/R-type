@@ -14,7 +14,7 @@
 
 namespace client {
 
-    /*
+    /**
      * PacketCallbacks
      * Class of the packet callbacks
      */
@@ -31,6 +31,7 @@ namespace client {
                                             components::Position &pos, components::Velocity &vel);
             static void sendPosVelCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                            components::Position &pos, components::Velocity &vel);
+            static void playerShootCallback(Client *client, network::NetworkClient &server, int &fromId, int &id);
         protected:
 
         private:

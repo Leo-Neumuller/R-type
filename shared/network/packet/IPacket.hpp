@@ -14,7 +14,7 @@
 
 namespace network {
 
-    /*
+    /**
      * IPacket
      * Interface of the packet
      */
@@ -22,31 +22,31 @@ namespace network {
         public:
 
             virtual ~IPacket() = default;
-            /*
+            /**
              * deserialize
              * Deserialize the packet
              */
             virtual void deserialize(std::vector<char> &data) = 0;
 
-            /*
+            /**
              * getSizeRequired
              * Get the size required
              */
             virtual int getSizeRequired() = 0;
 
-            /*
+            /**
              * handleData
              * Handle the data
              */
             virtual void handleData(int fromId) = 0;
 
-            /*
+            /**
              * setPacketCount
              * Set the packet count
              */
             virtual void setPacketCount(int packetCount) = 0;
 
-            /*
+            /**
              * getPacketCount
              * Get the packet count
              */

@@ -9,7 +9,7 @@
 
 namespace client {
 
-    /*
+    /**
      * helloCallback
      * Callback for the hello packet
      * @param client
@@ -30,7 +30,7 @@ namespace client {
         client->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, std::string>>(fromId, EPacketClient::DEBUG_PACKET_CLIENT, "Hello from client");
     }
 
-    /*
+    /**
      * debugCallback
      * Callback for the debug packet
      * @param client
@@ -43,7 +43,7 @@ namespace client {
         std::cout << "Debug from server: " << data << std::endl;
     }
 
-    /*
+    /**
      * newClientCallback
      * Callback for the new client packet
      * @param client
@@ -59,7 +59,7 @@ namespace client {
         client->registerNewPlayer(id, pos);
     }
 
-    /*
+    /**
      * clientBaseInfoCallback
      * Callback for the client base info packet
      * @param client
@@ -75,7 +75,7 @@ namespace client {
         client->setCurrentPlayer(id);
     }
 
-    /*
+    /**
      * forceSetPosCallback
      * Callback for the force set pos packet
      * @param client
@@ -99,7 +99,7 @@ namespace client {
         }
     }
 
-    /*
+    /**
      * sendPosVelCallback
      * Callback for the send pos vel packet
      * @param client
@@ -126,6 +126,12 @@ namespace client {
                 break;
             }
         }
+    }
+
+    void PacketCallbacks::playerShootCallback(Client *client, network::NetworkClient &server, int &fromId, int &id)
+    {
+        std::cout << "PLAYERSHOOT" << std::endl;
+        client->createPlayerMissile(id);
     }
 
 } // client

@@ -14,7 +14,7 @@
 
 namespace server {
 
-    /*
+    /**
      * PacketCallbacks
      * Class of the packet callbacks
      */
@@ -26,6 +26,7 @@ namespace server {
             static void helloCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId);
             static void debugCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId, std::string data);
             static void sendPosVelCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId, components::Position pos, components::Velocity vel);
+            static void playerShootCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId);
         protected:
 
         private:

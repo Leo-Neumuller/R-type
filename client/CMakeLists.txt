@@ -37,6 +37,20 @@ add_executable(r-type_client
         ClientSystems.hpp
         TimedEvents.cpp)
 
+set(link_src "${CMAKE_SOURCE_DIR}/assets")
+if(UNIX AND NOT APPLE)
+    set(link_dst "${CMAKE_CURRENT_BINARY_DIR}/assets")
+else()
+    set(link_dst "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets")
+endif()
+add_custom_command(
+        TARGET r-type_client
+        POST_BUILD COMMAND ${CMAKE_COMMAND}
+        -E create_symlink ${link_src} ${link_dst}
+        DEPENDS ${link_dst}
+        COMMENT "symbolic link ${link_src} => ${link_dst}"
+)
+
 include_directories(../shared/)
 
 target_compile_features(r-type_client PRIVATE cxx_std_17)

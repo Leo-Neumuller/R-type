@@ -19,7 +19,7 @@
 
 namespace server {
 
-    /*
+    /**
      * Server
      * Class of the server
      */

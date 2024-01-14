@@ -12,19 +12,18 @@
 #include "ClientComponents.hpp"
 #include "ClientSystems.hpp"
 
-namespace client
-{
+namespace client {
 
-    /*
+    /**
      * Client
      * Constructor of Client
      */
     Client::Client() : _server_list(), _network(_network_handler), _packets_registry(), _network_handler(_server_list, _packets_registry),
-                       _server(nullptr), _connected(false), _ecs(), _renderer(_ecs), _current_player_id(0), _timed_events()
+                        _server(nullptr), _connected(false), _ecs(), _renderer(_ecs), _current_player_id(0), _timed_events()
     {
     }
 
-    /*
+    /**
      * ~Client
      * Destructor of Client
      */
@@ -32,7 +31,7 @@ namespace client
     {
     }
 
-    /*
+    /**
      * connectToServer
      * Connect to the server
      * @param address
@@ -45,7 +44,7 @@ namespace client
         _network.run(std::move(address), port, *first_data);
     }
 
-    /*
+    /**
      * runClient
      * Run the client
      */
@@ -55,8 +54,7 @@ namespace client
 
         setup(deltatime);
         _renderer.startRender();
-        while (_renderer.isOpen())
-        {
+        while (_renderer.isOpen()) {
             networkHandle();
             _ecs.runSystems();
             _timed_events.runEvents(deltatime);
@@ -65,35 +63,28 @@ namespace client
         _network.stop();
     }
 
-    /*
+    /**
      * networkHandle
      * Handle the network
      */
     void Client::networkHandle()
     {
-        while (!_network_handler.isPacketQueueEmpty())
-        {
-            _server = &_server_list.begin()->second;
-            try
-            {
-                _network_handler.threatPacket();
+            while (!_network_handler.isPacketQueueEmpty()) {
+                _server = &_server_list.begin()->second;
+                try {
+                    _network_handler.threatPacket();
+                } catch (std::exception &e) {
+                    std::cerr << "invalid packet from server: " << e.what() << std::endl;
+                }
             }
-            catch (std::exception &e)
-            {
+            try {
+                _network_handler.runPackets();
+            } catch (std::exception &e) {
                 std::cerr << "invalid packet from server: " << e.what() << std::endl;
             }
-        }
-        try
-        {
-            _network_handler.runPackets();
-        }
-        catch (std::exception &e)
-        {
-            std::cerr << "invalid packet from server: " << e.what() << std::endl;
-        }
     }
 
-    /*
+    /**
      * getPacketsRegistry
      * Get the packets registry
      * @return
@@ -103,7 +94,7 @@ namespace client
         return _packets_registry;
     }
 
-    /*
+    /**
      * getNetworkHandler
      * Get the network handler
      * @return
@@ -113,7 +104,7 @@ namespace client
         return _network_handler;
     }
 
-    /*
+    /**
      * setup
      * Setup the client (register components, systems and network packets)
      * @param deltatime
@@ -122,6 +113,7 @@ namespace client
     {
         registerPacketClient<std::string>(EPacketClient::DEBUG_PACKET_CLIENT);
         registerPacketClient<components::Position, components::Velocity>(EPacketClient::CLIENT_SEND_POS_VEL);
+        registerPacketClient(EPacketClient::SHOOT_BULLET);
 
         registerPacketServer<bool>(PacketCallbacks::helloCallback, EPacketServer::SERVER_HELLO);
         registerPacketServer<std::string>(PacketCallbacks::debugCallback, EPacketServer::DEBUG_PACKET_SERVER);
@@ -129,6 +121,7 @@ namespace client
         registerPacketServer<int, components::Position>(PacketCallbacks::clientBaseInfoCallback, EPacketServer::CLIENT_BASE_INFO);
         registerPacketServer<int, components::Position, components::Velocity>(PacketCallbacks::forceSetPosCallback, EPacketServer::FORCE_SET_POS_VEL);
         registerPacketServer<int, components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketServer::SEND_POS_VEL);
+        registerPacketServer<int>(PacketCallbacks::playerShootCallback, EPacketServer::PLAYER_SHOOT_BULLET);
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
@@ -170,10 +163,9 @@ namespace client
 
         auto entity(_ecs.spawnEntity());
         _ecs.addComponent(entity, &_texturesFonts);
-        _ecs.addComponent(entity, components::EnemySpawnData{0, 0.0});
     }
 
-    /*
+    /**
      * isConnected
      * Check if the client is connected
      * @return bool
@@ -183,7 +175,7 @@ namespace client
         return _connected;
     }
 
-    /*
+    /**
      * setConnected
      * Set the connected status
      * @param connected
@@ -193,7 +185,7 @@ namespace client
         _connected = connected;
     }
 
-    /*
+    /**
      * registerNewPlayer
      * Register a new player
      * @param id
@@ -223,7 +215,7 @@ namespace client
         _ecs.addComponent(entity, components::EntityType{components::EntityType::PLAYER});
     }
 
-    /*
+    /**
      * setupBackground
      * Setup the background
      */
@@ -238,7 +230,7 @@ namespace client
         _ecs.addComponent(entity, components::EntityType{components::EntityType::BACKGROUND});
     }
 
-    /*
+    /**
      * getEcs
      * Get the ECS
      * @return
@@ -248,7 +240,7 @@ namespace client
         return _ecs;
     }
 
-    /*
+    /**
      * setCurrentPlayer
      * Set the current player
      * @param id
@@ -258,10 +250,8 @@ namespace client
         auto &ids = getEcs().getComponent<components::Id>();
         auto &entity_types = getEcs().getComponent<components::EntityType>();
 
-        for (auto entity : getEcs().getEntities())
-        {
-            if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == id)
-            {
+        for (auto entity : getEcs().getEntities()) {
+            if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == id) {
                 entity_types[entity] = components::EntityType::CURRENT_PLAYER;
                 _ecs.addComponent(entity, &_network_handler);
                 break;
@@ -328,5 +318,48 @@ namespace client
         _ecs.addComponent(enemy, components::Size{55, 55});
         _ecs.addComponent(enemy, components::EntityType{components::EntityType::ENEMY});
     }
+    void Client::createPlayerMissile(components::Id id)
+    {
+        auto &ids = getEcs().getComponent<components::Id>();
+        auto &entity_types = getEcs().getComponent<components::EntityType>();
+        auto &poss = getEcs().getComponent<components::Position>();
+
+        for (auto entity : getEcs().getEntities()) {
+            if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == id) {
+                auto pos = poss[entity].value();
+                auto loaderTmp = _ecs.getComponent<Loader *>();
+                Loader *loader;
+
+
+                for (int i = 0; i < loaderTmp.size(); ++i) {
+                    if (loaderTmp.has_index(i)) {
+                        loader = loaderTmp[i].value();
+                        break;
+                    }
+                }
+                if (!loader)
+                    return;
+
+                auto missile (_ecs.spawnEntity());
+
+                _ecs.addComponent(missile, components::Position{pos.x + 40, pos.y});
+                _ecs.addComponent(missile, components::Velocity{200, 0});
+
+                std::map<int, sf::IntRect> spriteRects;
+                for (int i = 0; i < 6; ++i)
+                    spriteRects[i] = sf::IntRect(i * 30, 0, 30, 30);
+                _ecs.addComponent(missile, components::MissileStruct{0.0f, true});
+                sf::Sprite tmp (loader->getTexture("missile"));
+                tmp.setTextureRect(spriteRects[0]);
+
+                _ecs.addComponent(missile, components::Anim{6, 0, 0.1f, 0.0f, spriteRects});
+                _ecs.addComponent(missile, components::Drawable(tmp));
+                _ecs.addComponent(missile, components::Size{30, 30});
+                _ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET});
+                break;
+            }
+        }
+    }
+
 
 } // client

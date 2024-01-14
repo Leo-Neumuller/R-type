@@ -12,7 +12,7 @@
 
 namespace server {
 
-    /*
+    /**
      * Server
      * Constructor of Server
      */
@@ -21,7 +21,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * ~Server
      * Destructor of Server
      */
@@ -29,7 +29,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * runNetwork
      * Run the network
      * @param port: the port
@@ -39,7 +39,7 @@ namespace server {
         _network.run(port);
     }
 
-    /*
+    /**
      * runServer
      * Run the server
      */
@@ -62,7 +62,7 @@ namespace server {
 
     }
 
-    /*
+    /**
      * networkHandler
      * Handle the network
      */
@@ -82,7 +82,7 @@ namespace server {
         }
     }
 
-    /*
+    /**
      * setup
      * Setup the server (register packets, components, systems)
      * @param deltatime: the deltatime
@@ -95,19 +95,24 @@ namespace server {
         registerPacketServer<int, components::Position>(EPacketServer::CLIENT_BASE_INFO);
         registerPacketServer<int, components::Position, components::Velocity>(EPacketServer::FORCE_SET_POS_VEL);
         registerPacketServer<int, components::Position, components::Velocity>(EPacketServer::SEND_POS_VEL);
+        registerPacketServer<int>(EPacketServer::PLAYER_SHOOT_BULLET);
 
         registerPacketClient(PacketCallbacks::helloCallback, EPacketClient::CLIENT_HELLO);
         registerPacketClient<std::string>(PacketCallbacks::debugCallback, EPacketClient::DEBUG_PACKET_CLIENT);
         registerPacketClient<components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketClient::CLIENT_SEND_POS_VEL);
+        registerPacketClient(PacketCallbacks::playerShootCallback, EPacketClient::SHOOT_BULLET);
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
         _ecs.registerComponent<components::Id>();
+        _ecs.registerComponent<components::EntityType>();
+        _ecs.registerComponent<components::Size>();
+        _ecs.registerComponent<components::MissileStruct>();
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
-
+        _ecs.addSystem<components::MissileStruct>(ecs::Systems::manageMissiles, deltatime);
     }
 
-    /*
+    /**
      * getPacketsRegistry
      * Get the packets registry
      * @return: the packets registry
@@ -117,7 +122,7 @@ namespace server {
         return _packets_registry;
     }
 
-    /*
+    /**
      * getNetworkHandler
      * Get the network handler
      * @return: the network handler
@@ -127,7 +132,7 @@ namespace server {
         return _network_handler;
     }
 
-    /*
+    /**
      * registerNewPlayer
      * Register a new player
      * @param id: the id of the player
@@ -142,7 +147,7 @@ namespace server {
         _ecs.addComponent(entity, components::Id{id});
     }
 
-    /*
+    /**
      * getTimedEvents
      * Get the timed events
      * @return: the timed events
@@ -152,7 +157,7 @@ namespace server {
         return _timed_events;
     }
 
-    /*
+    /**
      * getEcs
      * Get the ecs
      * @return: the ecs
@@ -162,7 +167,7 @@ namespace server {
         return _ecs;
     }
 
-    /*
+    /**
      * setPlayerPos
      * Set the player position
      * @param id: the id of the player
@@ -179,7 +184,7 @@ namespace server {
         }
     }
 
-    /*
+    /**
      * setPlayerVel
      * Set the player velocity
      * @param id: the id of the player

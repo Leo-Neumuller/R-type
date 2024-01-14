@@ -10,7 +10,7 @@
 
 namespace ecs {
 
-    /*
+    /**
      * moveSystem
      * Move the entity
      * @param r: the registry
@@ -30,7 +30,7 @@ namespace ecs {
         }
     }
 
-    /*
+    /**
      * manageMissiles
      * Manage the missiles
      * @param ecs: the registry

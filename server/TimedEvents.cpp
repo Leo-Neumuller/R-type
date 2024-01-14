@@ -9,7 +9,7 @@
 
 namespace server {
 
-    /*
+    /**
      * TimedEvents
      * Constructor of TimedEvents
      */
@@ -17,7 +17,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * ~TimedEvents
      * Destructor of TimedEvents
      */
@@ -25,7 +25,7 @@ namespace server {
     {
     }
 
-    /*
+    /**
      * addEvent
      * Add an event
      * @param func: the function
@@ -36,7 +36,7 @@ namespace server {
         _events.emplace_back(func, time + _time);
     }
 
-    /*
+    /**
      * runEvents
      * Run the events
      * @param deltaTime: the delta time
@@ -58,7 +58,7 @@ namespace server {
         }
     }
 
-    /*
+    /**
      * addReocurringEvent
      * Add a reocurring event
      * @param func: the function

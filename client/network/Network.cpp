@@ -9,7 +9,7 @@
 
 namespace client {
 
-    /*
+    /**
      * Constructor
      * @param networkHandler
      */
@@ -19,14 +19,14 @@ namespace client {
     {
     }
 
-    /*
+    /**
      * Destructor
      */
     Network::~Network()
     {
     }
 
-    /*
+    /**
      * _begin_receive
      * Start the receive of the udp socket
      */
@@ -36,7 +36,7 @@ namespace client {
         _udp_socket->async_receive_from(asio::buffer(_data, 1024), _udp_client_endpoint, std::bind(&Network::_handle_receive, this, std::placeholders::_1, std::placeholders::_2));
     }
 
-    /*
+    /**
      * _handle_receive
      * Handle the receive of the udp socket
      */
@@ -48,7 +48,7 @@ namespace client {
         }
     }
 
-    /*
+    /**
      * run
      * Run the network
      * @param address
@@ -70,7 +70,7 @@ namespace client {
 
     }
 
-    /*
+    /**
      * getUdpSocket
      * Get the udp socket
      * @return udp socket
@@ -80,7 +80,7 @@ namespace client {
         return _udp_socket;
     }
 
-    /*
+    /**
      * getUdpClientEndpoint
      * Get the udp client endpoint
      * @return udp client endpoint
@@ -90,7 +90,7 @@ namespace client {
         return _udp_client_endpoint;
     }
 
-    /*
+    /**
      * _fake_handle
      * Fake handle for the async_send
      * @param error
@@ -101,7 +101,7 @@ namespace client {
 
     }
 
-    /*
+    /**
      * stop
      * Stop the network
      */

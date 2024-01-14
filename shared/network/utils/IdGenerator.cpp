@@ -9,7 +9,7 @@
 
 namespace network {
 
-    /*
+    /**
      * IdGenerator
      * Constructor of IdGenerator
      */
@@ -17,7 +17,7 @@ namespace network {
     {
     }
 
-    /*
+    /**
      * ~IdGenerator
      * Destructor of IdGenerator
      */
@@ -25,7 +25,7 @@ namespace network {
     {
     }
 
-    /*
+    /**
      * getId
      * Get the id
      * @param source: the source

@@ -26,7 +26,7 @@
 
 namespace client {
 
-    /*
+    /**
      * Client
      * Class of the client
      */
@@ -40,7 +40,7 @@ namespace client {
             network::PacketsRegistry &getPacketsRegistry();
             network::NetworkHandler<EPacketServer> &getNetworkHandler();
 
-            /*
+            /**
              * registerPacketServer
              * Register a packet from the server
              * @tparam Args
@@ -52,7 +52,7 @@ namespace client {
                 _packets_registry.registerPacketServer<Args...>([this, func](int id, Args... args) {func(this, *_server, id, args...);}, packet);
             }
 
-            /*
+            /**
              * registerPacketClient
              * Register a packet from the client
              * @tparam Args
@@ -72,8 +72,11 @@ namespace client {
             Registry &getEcs();
             void setCurrentPlayer(int id);
             void setupBackground();
+            void createPlayerMissile(components::Id id);
             void createEnemy(components::Position pos);
             void createBoss(components::Position pos);
+        protected:
+
 
     protected:
 

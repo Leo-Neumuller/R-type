@@ -12,7 +12,7 @@
 #include <vector>
 #include <optional>
 
-/*
+/**
  * SparseArray
  * Class of the sparse array
  */
@@ -35,7 +35,7 @@ class SparseArray {
         SparseArray &operator=(SparseArray const &) = default;
         SparseArray &operator=(SparseArray &&) noexcept = default;
 
-        /*
+        /**
          * operator[]
          * Operator for []
          * @param index: the index
@@ -46,7 +46,7 @@ class SparseArray {
             return _data[index];
         }
 
-        /*
+        /**
          * operator[]
          * const Operator for []
          * @param index: the index
@@ -60,7 +60,7 @@ class SparseArray {
             return _data[index];
         }
 
-        /*
+        /**
          * begin
          * Begin of the array
          * @return: the iterator
@@ -70,7 +70,7 @@ class SparseArray {
             return _data.begin();
         }
 
-        /*
+        /**
          * begin
          * const Begin of the array
          * @return: the iterator
@@ -80,7 +80,7 @@ class SparseArray {
             return _data.begin();
         }
 
-        /*
+        /**
          * cbegin
          * const Begin of the array
          * @return: the iterator
@@ -90,7 +90,7 @@ class SparseArray {
             return _data.cbegin();
         }
 
-        /*
+        /**
          * end
          * End of the array
          * @return: the iterator
@@ -100,7 +100,7 @@ class SparseArray {
             return _data.end();
         }
 
-        /*
+        /**
          * end
          * const End of the array
          * @return: the iterator
@@ -110,7 +110,7 @@ class SparseArray {
             return _data.end();
         }
 
-        /*
+        /**
          * cend
          * const End of the array
          * @return: the iterator
@@ -120,7 +120,7 @@ class SparseArray {
             return _data.cend();
         }
 
-        /*
+        /**
          * size
          * Get the size of the array
          * @return: the size
@@ -130,7 +130,7 @@ class SparseArray {
             return _data.size();
         }
 
-        /*
+        /**
          * insert_at
          * Insert a value at a position
          * @param pos: the position
@@ -149,7 +149,7 @@ class SparseArray {
             return _data[pos];
         }
 
-        /*
+        /**
          * insert_at
          * Insert a value at a position
          * @param pos: the position
@@ -168,7 +168,7 @@ class SparseArray {
             return _data[pos];
         }
 
-        /*
+        /**
          * insert_at
          * Insert a value at a position
          * @param pos: the position
@@ -185,7 +185,7 @@ class SparseArray {
             return _data[pos];
         }
 
-        /*
+        /**
          * insert_at
          * Insert a value at a position
          * @param pos: the position
@@ -202,7 +202,7 @@ class SparseArray {
             return _data[pos];
         }
 
-        /*
+        /**
          * emplace_at
          * Emplace a value at a position
          * @param pos: the position
@@ -220,7 +220,7 @@ class SparseArray {
             return _data[pos];
         }
 
-        /*
+        /**
          * erase
          * Erase a value at a position
          * @param pos: the position
@@ -232,7 +232,7 @@ class SparseArray {
             _data[pos] = std::nullopt;
         }
 
-        /*
+        /**
          * get_index
          * Get the index of a value
          * @param value: the value
@@ -247,7 +247,7 @@ class SparseArray {
             return _data.size();
         }
 
-        /*
+        /**
          * has_index
          * Check if the index exists
          * @param index: the index
@@ -260,7 +260,7 @@ class SparseArray {
             return _data[index].has_value();
         }
 
-        /*
+        /**
          * push_back
          * Push a value at the end of the array
          * @param value: the value
