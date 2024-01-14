@@ -113,6 +113,7 @@ namespace client {
     {
         registerPacketClient<std::string>(EPacketClient::DEBUG_PACKET_CLIENT);
         registerPacketClient<components::Position, components::Velocity>(EPacketClient::CLIENT_SEND_POS_VEL);
+        registerPacketClient(EPacketClient::SHOOT_BULLET);
 
         registerPacketServer<bool>(PacketCallbacks::helloCallback, EPacketServer::SERVER_HELLO);
         registerPacketServer<std::string>(PacketCallbacks::debugCallback, EPacketServer::DEBUG_PACKET_SERVER);
@@ -120,6 +121,7 @@ namespace client {
         registerPacketServer<int, components::Position>(PacketCallbacks::clientBaseInfoCallback, EPacketServer::CLIENT_BASE_INFO);
         registerPacketServer<int, components::Position, components::Velocity>(PacketCallbacks::forceSetPosCallback, EPacketServer::FORCE_SET_POS_VEL);
         registerPacketServer<int, components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketServer::SEND_POS_VEL);
+        registerPacketServer<int>(PacketCallbacks::playerShootCallback, EPacketServer::PLAYER_SHOOT_BULLET);
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
@@ -243,6 +245,49 @@ namespace client {
             }
         }
         _current_player_id = id;
+    }
+
+    void Client::createPlayerMissile(components::Id id)
+    {
+        auto &ids = getEcs().getComponent<components::Id>();
+        auto &entity_types = getEcs().getComponent<components::EntityType>();
+        auto &poss = getEcs().getComponent<components::Position>();
+
+        for (auto entity : getEcs().getEntities()) {
+            if (ids.has_index(entity) && entity_types.has_index(entity) && ids[entity] == id) {
+                auto pos = poss[entity].value();
+                auto loaderTmp = _ecs.getComponent<Loader *>();
+                Loader *loader;
+
+
+                for (int i = 0; i < loaderTmp.size(); ++i) {
+                    if (loaderTmp.has_index(i)) {
+                        loader = loaderTmp[i].value();
+                        break;
+                    }
+                }
+                if (!loader)
+                    return;
+
+                auto missile (_ecs.spawnEntity());
+
+                _ecs.addComponent(missile, components::Position{pos.x + 40, pos.y});
+                _ecs.addComponent(missile, components::Velocity{200, 0});
+
+                std::map<int, sf::IntRect> spriteRects;
+                for (int i = 0; i < 6; ++i)
+                    spriteRects[i] = sf::IntRect(i * 30, 0, 30, 30);
+                _ecs.addComponent(missile, components::MissileStruct{0.0f, true});
+                sf::Sprite tmp (loader->getTexture("missile"));
+                tmp.setTextureRect(spriteRects[0]);
+
+                _ecs.addComponent(missile, components::Anim{6, 0, 0.1f, 0.0f, spriteRects});
+                _ecs.addComponent(missile, components::Drawable(tmp));
+                _ecs.addComponent(missile, components::Size{30, 30});
+                _ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET});
+                break;
+            }
+        }
     }
 
 

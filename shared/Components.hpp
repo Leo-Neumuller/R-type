@@ -64,6 +64,43 @@ namespace components {
 
     typedef int Id;
 
+    /**
+     * EntityType
+     * Enum of the entity types
+     * @CURRENT_PLAYER: current player
+     * @PLAYER: player
+     * @ENEMY: enemy
+     * @BACKGROUND: background
+     * @BULLET: bullet
+     * @OBSTACLE: obstacle
+     * @UI: UI
+     * @BUTTON: button
+     * @TEXT: text
+     * @CURSOR: cursor
+     * @SOUND: sound
+     * @MUSIC: music
+     * @ANIMATION: animation
+     * @PARTICLE: particle
+     * @UNKNOWN: unknown
+     */
+    enum class EntityType {
+        CURRENT_PLAYER,
+        PLAYER,
+        ENEMY,
+        BACKGROUND,
+        BULLET,
+        OBSTACLE,
+        UI,
+        BUTTON,
+        TEXT,
+        CURSOR,
+        SOUND,
+        MUSIC,
+        ANIMATION,
+        PARTICLE,
+        UNKNOWN
+    };
+
 } // ecs
 
 #endif //R_TYPE_SERVER_COMPONENTS_HPP

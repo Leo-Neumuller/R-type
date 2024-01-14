@@ -93,7 +93,6 @@ class Registry {
          */
         void killEntity(entity_t const &entity)
         {
-            _entities.erase(std::remove(_entities.begin(), _entities.end(), entity), _entities.end());
             if (_free_entities.find(entity) != _free_entities.end()) {
                 for (auto &func : _free_entities[entity]) {
                     func();

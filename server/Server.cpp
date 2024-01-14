@@ -95,16 +95,21 @@ namespace server {
         registerPacketServer<int, components::Position>(EPacketServer::CLIENT_BASE_INFO);
         registerPacketServer<int, components::Position, components::Velocity>(EPacketServer::FORCE_SET_POS_VEL);
         registerPacketServer<int, components::Position, components::Velocity>(EPacketServer::SEND_POS_VEL);
+        registerPacketServer<int>(EPacketServer::PLAYER_SHOOT_BULLET);
 
         registerPacketClient(PacketCallbacks::helloCallback, EPacketClient::CLIENT_HELLO);
         registerPacketClient<std::string>(PacketCallbacks::debugCallback, EPacketClient::DEBUG_PACKET_CLIENT);
         registerPacketClient<components::Position, components::Velocity>(PacketCallbacks::sendPosVelCallback, EPacketClient::CLIENT_SEND_POS_VEL);
+        registerPacketClient(PacketCallbacks::playerShootCallback, EPacketClient::SHOOT_BULLET);
 
         _ecs.registerComponent<components::Position>();
         _ecs.registerComponent<components::Velocity>();
         _ecs.registerComponent<components::Id>();
+        _ecs.registerComponent<components::EntityType>();
+        _ecs.registerComponent<components::Size>();
+        _ecs.registerComponent<components::MissileStruct>();
         _ecs.addSystem<components::Position, components::Velocity>(ecs::Systems::moveSystem, deltatime);
-
+        _ecs.addSystem<components::MissileStruct>(ecs::Systems::manageMissiles, deltatime);
     }
 
     /**

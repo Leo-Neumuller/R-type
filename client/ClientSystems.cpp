@@ -198,6 +198,7 @@ namespace ecs {
      */
     void ClientSystems::playerMissile(Registry &ecs, int index, float x, float y)
     {
+        auto network_handler = ecs.getComponent<components::NetworkHandler>();
         auto loaderTmp = ecs.getComponent<Loader *>();
         Loader *loader;
 
@@ -227,6 +228,12 @@ namespace ecs {
         ecs.addComponent(missile, components::Drawable(tmp));
         ecs.addComponent(missile, components::Size{30, 30});
         ecs.addComponent(missile, components::EntityType{components::EntityType::BULLET});
+
+        for (int i = 0; i < network_handler.size(); ++i) {
+            if (network_handler.has_index(i)) {
+                network_handler[i].value()->serializeSendPacket<network::GenericPacket<std::any>>(0, EPacketClient::SHOOT_BULLET);
+            }
+        }
 
     }
 

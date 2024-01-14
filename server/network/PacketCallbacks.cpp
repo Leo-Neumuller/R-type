@@ -109,4 +109,29 @@ namespace server {
         }
     }
 
+    void
+    PacketCallbacks::playerShootCallback(Server *server, std::map<int, network::NetworkClient> &_clients, int &fromId)
+    {
+        auto missile (server->getEcs().spawnEntity());
+        auto &poss = server->getEcs().getComponent<components::Position>();
+        auto &ids = server->getEcs().getComponent<components::Id>();
+
+        std::cout << "SHOOOOT" << std::endl;
+        for (auto &entity : server->getEcs().getEntities()) {
+            if (ids.has_index(entity) && poss.has_index(entity) && ids[entity] == fromId) {
+                server->getEcs().addComponent(missile, components::Position{poss[entity]->x + 40, poss[entity]->y});
+                server->getEcs().addComponent(missile, components::Velocity{200, 0});
+                server->getEcs().addComponent(missile, components::Size{30, 30});
+                server->getEcs().addComponent(missile, components::EntityType{components::EntityType::BULLET});
+
+                for (auto &entityOthers : server->getEcs().getEntities()) {
+                    if (ids.has_index(entityOthers) && ids[entityOthers] != fromId) {
+                        server->getNetworkHandler().serializeSendPacket<network::GenericPacket<std::any, int>>(
+                                ids[entityOthers].value(), EPacketServer::PLAYER_SHOOT_BULLET, fromId);
+                    }
+                }
+            }
+        }
+    }
+
 } // Server

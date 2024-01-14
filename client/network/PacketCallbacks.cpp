@@ -71,7 +71,6 @@ namespace client {
     void PacketCallbacks::clientBaseInfoCallback(Client *client, network::NetworkClient &server, int &fromId, int &id,
                                                  components::Position &pos)
     {
-        std::cout << "testtttttt" << std::endl;
         client->registerNewPlayer(id, pos);
         client->setCurrentPlayer(id);
 
@@ -128,6 +127,12 @@ namespace client {
                 break;
             }
         }
+    }
+
+    void PacketCallbacks::playerShootCallback(Client *client, network::NetworkClient &server, int &fromId, int &id)
+    {
+        std::cout << "PLAYERSHOOT" << std::endl;
+        client->createPlayerMissile(id);
     }
 
 } // client

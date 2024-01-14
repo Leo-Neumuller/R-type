@@ -72,6 +72,7 @@ namespace client {
             Registry &getEcs();
             void setCurrentPlayer(int id);
             void setupBackground();
+            void createPlayerMissile(components::Id id);
         protected:
 
         private:
